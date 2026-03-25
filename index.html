@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEM Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family:'Poppins',sans-serif;
+  margin:0;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+}
+
+/* Navbar */
+.navbar{
+  padding:15px 30px;
+  background:rgba(255,255,255,0.1);
+}
+
+/* Container */
+.container{ padding:30px; }
+
+/* Cards */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.card img{ width:100%; height:150px; object-fit:cover; }
+
+.card-body{ padding:10px; }
+
+button{
+  margin:5px;
+  padding:8px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* Upload */
+.uploader{
+  margin-bottom:20px;
+}
+
+/* Login */
+#loginScreen{
+  position:fixed; inset:0;
+  display:flex; justify-content:center; align-items:center;
+  background:#111;
+}
+
+.login-box{
+  background:#222;
+  padding:20px;
+  border-radius:10px;
+}
+
+.login-box input{
+  width:100%;
+  margin:10px 0;
+  padding:8px;
+}
+
+/* Preview */
+#previewModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  background:rgba(0,0,0,0.9);
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>Login</h2>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <p id="error" style="color:red;display:none;">Wrong login</p>
+  </div>
+</div>
+
+<div class="navbar"><h2>STEM Dashboard</h2></div>
+
+<div class="container">
+
+<div class="uploader">
+<input type="file" id="fileInput">
+</div>
+
+<div id="grid" class="grid"></div>
+
+</div>
+
+<!-- Preview -->
+<div id="previewModal">
+  <iframe id="pptFrame" style="width:100%;height:100%"></iframe>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyAc7E2CeSwW9_uTi-yFnvlpMD2BMdPT53I",
+  authDomain: "temple-of-learning.firebaseapp.com",
+  projectId: "temple-of-learning",
+  storageBucket: "temple-of-learning.firebasestorage.app",
+  messagingSenderId: "663049888458",
+  appId: "1:663049888458:web:0914cdd63f99f319358a33"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let items=[];
+
+// LOGIN
+document.getElementById("loginBtn").onclick = () => {
+  if(
+    document.getElementById("username").value==="admin" &&
+    document.getElementById("password").value==="1234"
+  ){
+    document.getElementById("loginScreen").style.display="none";
+  } else {
+    document.getElementById("error").style.display="block";
+  }
+};
+
+// LOAD DATA
+async function load(){
+  const snap = await db.collection("ppts").get();
+  items = snap.docs.map(d=>({id:d.id,...d.data()}));
+  render();
+}
+
+function render(){
+  document.getElementById("grid").innerHTML = items.map((it,i)=>`
+  <div class="card">
+    <img src="https://source.unsplash.com/400x300/?technology">
+    <div class="card-body">
+      <h3>${it.title}</h3>
+      <button onclick="preview('${it.link}')">Preview</button>
+      <button onclick="edit(${i})">Edit</button>
+      <button onclick="del(${i})">Delete</button>
+    </div>
+  </div>`).join("");
+}
+
+// ADD
+document.getElementById("fileInput").onchange = async e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const title = file.name;
+  const link = prompt("Paste OneDrive link");
+  if(!link) return;
+  await db.collection("ppts").add({title,link});
+  load();
+};
+
+// DELETE
+async function del(i){
+  await db.collection("ppts").doc(items[i].id).delete();
+  load();
+}
+
+// EDIT
+async function edit(i){
+  const t = prompt("Title",items[i].title);
+  const l = prompt("Link",items[i].link);
+  if(!t || !l) return;
+  await db.collection("ppts").doc(items[i].id).update({title:t,link:l});
+  load();
+}
+
+// PREVIEW
+function preview(link){
+  document.getElementById("pptFrame").src = link;
+  document.getElementById("previewModal").style.display="block";
+}
+
+load();
+</script>
+
+</body>
+</html>
