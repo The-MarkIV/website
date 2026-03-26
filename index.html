@@ -7,20 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-body {
+body{
   font-family:'Poppins',sans-serif;
   margin:0;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:#fff;
 }
 
-/* Navbar */
 .navbar{
   padding:15px 30px;
   background:rgba(255,255,255,0.1);
 }
 
-/* Container */
 .container{ padding:30px; }
 
 /* Cards */
@@ -36,7 +34,11 @@ body {
   overflow:hidden;
 }
 
-.card img{ width:100%; height:150px; object-fit:cover; }
+.card img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+}
 
 .card-body{ padding:10px; }
 
@@ -50,13 +52,26 @@ button{
 
 /* Upload */
 .uploader{
+  border:2px dashed rgba(255,255,255,.3);
+  padding:25px;
+  text-align:center;
+  border-radius:12px;
   margin-bottom:20px;
+  transition:0.3s;
+}
+
+.uploader.dragover{
+  background:rgba(0,255,255,0.1);
+  border-color:#00eaff;
 }
 
 /* Login */
 #loginScreen{
-  position:fixed; inset:0;
-  display:flex; justify-content:center; align-items:center;
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   background:#111;
 }
 
@@ -79,6 +94,14 @@ button{
   display:none;
   background:rgba(0,0,0,0.9);
 }
+
+#previewModal button{
+  position:absolute;
+  top:10px;
+  right:15px;
+  background:red;
+  color:white;
+}
 </style>
 </head>
 
@@ -99,19 +122,26 @@ button{
 
 <div class="container">
 
-<div class="uploader">
-<input type="file" id="fileInput">
+<!-- UPLOADER -->
+<div class="uploader" id="dropZone">
+  <p>📂 Drag & Drop PPT here</p>
+  <p>OR</p>
+  <input type="file" id="fileInput">
+  <p>OR</p>
+  <button onclick="addByLink()">Add via OneDrive Link</button>
 </div>
 
 <div id="grid" class="grid"></div>
 
 </div>
 
-<!-- Preview -->
+<!-- PREVIEW -->
 <div id="previewModal">
+  <button onclick="closePreview()">X</button>
   <iframe id="pptFrame" style="width:100%;height:100%"></iframe>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
@@ -163,16 +193,55 @@ function render(){
   </div>`).join("");
 }
 
-// ADD
-document.getElementById("fileInput").onchange = async e=>{
+// DRAG DROP
+const dropZone = document.getElementById("dropZone");
+
+dropZone.addEventListener("dragover", e=>{
+  e.preventDefault();
+  dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", ()=>{
+  dropZone.classList.remove("dragover");
+});
+
+dropZone.addEventListener("drop", e=>{
+  e.preventDefault();
+  dropZone.classList.remove("dragover");
+  const file = e.dataTransfer.files[0];
+  handleFile(file);
+});
+
+// FILE INPUT
+document.getElementById("fileInput").onchange = e=>{
   const file = e.target.files[0];
-  if(!file) return;
-  const title = file.name;
-  const link = prompt("Paste OneDrive link");
-  if(!link) return;
-  await db.collection("ppts").add({title,link});
-  load();
+  handleFile(file);
 };
+
+// HANDLE FILE
+async function handleFile(file){
+  if(!file) return;
+
+  const title = file.name;
+  const link = prompt("Paste OneDrive link for this file:");
+
+  if(!link) return;
+
+  await db.collection("ppts").add({title, link});
+  load();
+}
+
+// ADD BY LINK
+async function addByLink(){
+  const link = prompt("Paste OneDrive link:");
+  if(!link) return;
+
+  const title = prompt("Enter title:");
+  if(!title) return;
+
+  await db.collection("ppts").add({title, link});
+  load();
+}
 
 // DELETE
 async function del(i){
@@ -189,10 +258,29 @@ async function edit(i){
   load();
 }
 
-// PREVIEW
+// PREVIEW FIX
 function preview(link){
-  document.getElementById("pptFrame").src = link;
+  let embedLink = link;
+
+  if(link.includes("onedrive.live.com") && !link.includes("embed")){
+    try{
+      const url = new URL(link);
+      const resid = url.searchParams.get("resid");
+      const authkey = url.searchParams.get("authkey");
+
+      if(resid){
+        embedLink = `https://onedrive.live.com/embed?resid=${resid}${authkey ? `&authkey=${authkey}` : ""}`;
+      }
+    }catch(e){}
+  }
+
+  document.getElementById("pptFrame").src = embedLink;
   document.getElementById("previewModal").style.display="block";
+}
+
+function closePreview(){
+  document.getElementById("previewModal").style.display="none";
+  document.getElementById("pptFrame").src="";
 }
 
 load();
