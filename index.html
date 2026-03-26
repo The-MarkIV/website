@@ -3,25 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STEM Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Temple of Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
-  font-family:'Poppins',sans-serif;
+  font-family:'Inter',sans-serif;
   margin:0;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  background:#0a0a0a;
   color:#fff;
 }
 
-.navbar{
-  padding:15px 30px;
-  background:rgba(255,255,255,0.1);
+/* macOS Dock */
+.dock{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  padding:10px 20px;
+  border-radius:20px;
+  display:flex;
+  gap:15px;
 }
 
-.container{ padding:30px; }
+.dock div{
+  width:40px;
+  height:40px;
+  background:rgba(255,255,255,0.15);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.2s;
+}
 
-/* Cards */
+.dock div:hover{
+  transform:scale(1.2);
+}
+
+/* Window style */
+.window{
+  margin:40px;
+  border-radius:20px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.titlebar{
+  padding:10px;
+  display:flex;
+  gap:8px;
+}
+
+.circle{width:12px;height:12px;border-radius:50%;}
+.red{background:#ff5f57}
+.yellow{background:#ffbd2e}
+.green{background:#28c840}
+
+.container{ padding:20px; }
+
+#searchInput{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  margin-bottom:20px;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
@@ -29,40 +84,25 @@ body{
 }
 
 .card{
-  background:rgba(255,255,255,0.1);
-  border-radius:12px;
+  background:rgba(255,255,255,0.05);
+  border-radius:15px;
   overflow:hidden;
-}
-
-.card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-}
-
-.card-body{ padding:10px; }
-
-button{
-  margin:5px;
-  padding:8px 10px;
-  border:none;
-  border-radius:6px;
   cursor:pointer;
-}
-
-/* Upload */
-.uploader{
-  border:2px dashed rgba(255,255,255,.3);
-  padding:25px;
-  text-align:center;
-  border-radius:12px;
-  margin-bottom:20px;
   transition:0.3s;
 }
 
-.uploader.dragover{
-  background:rgba(0,255,255,0.1);
-  border-color:#00eaff;
+.card:hover{transform:scale(1.05)}
+
+.card img{width:100%;height:150px;object-fit:cover}
+.card-body{padding:10px}
+
+button{
+  margin-top:5px;
+  padding:6px 10px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  color:white;
 }
 
 /* Login */
@@ -72,81 +112,62 @@ button{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#111;
+  background:black;
 }
 
 .login-box{
-  background:#222;
-  padding:20px;
-  border-radius:10px;
+  background:rgba(255,255,255,0.05);
+  padding:40px;
+  border-radius:20px;
+  backdrop-filter:blur(20px);
 }
 
 .login-box input{
   width:100%;
   margin:10px 0;
-  padding:8px;
+  padding:10px;
+  border-radius:10px;
+  border:none;
 }
 
-/* Preview */
-#previewModal{
-  position:fixed;
-  inset:0;
-  display:none;
-  background:rgba(0,0,0,0.9);
-}
-
-#previewModal button{
-  position:absolute;
-  top:10px;
-  right:15px;
-  background:red;
-  color:white;
-}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
-    <h2>Login</h2>
+    <h2>Temple of Learning</h2>
     <input id="username" placeholder="Username">
     <input id="password" type="password" placeholder="Password">
     <button id="loginBtn">Login</button>
-    <p id="error" style="color:red;display:none;">Wrong login</p>
   </div>
 </div>
 
-<div class="navbar"><h2>STEM Dashboard</h2></div>
+<div class="window">
+  <div class="titlebar">
+    <div class="circle red"></div>
+    <div class="circle yellow"></div>
+    <div class="circle green"></div>
+  </div>
 
-<div class="container">
+  <div class="container">
+    <input type="text" id="searchInput" placeholder="Search...">
 
-<!-- UPLOADER -->
-<div class="uploader" id="dropZone">
-  <p>📂 Drag & Drop PPT here</p>
-  <p>OR</p>
-  <input type="file" id="fileInput">
-  <p>OR</p>
-  <button onclick="addByLink()">Add via OneDrive Link</button>
+    <div id="grid" class="grid"></div>
+  </div>
 </div>
 
-<div id="grid" class="grid"></div>
-
+<div class="dock">
+  <div>📁</div>
+  <div>🔍</div>
+  <div>⚙️</div>
 </div>
 
-<!-- PREVIEW -->
-<div id="previewModal">
-  <button onclick="closePreview()">X</button>
-  <iframe id="pptFrame" style="width:100%;height:100%"></iframe>
-</div>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAc7E2CeSwW9_uTi-yFnvlpMD2BMdPT53I",
   authDomain: "temple-of-learning.firebaseapp.com",
@@ -161,19 +182,12 @@ const db = firebase.firestore();
 
 let items=[];
 
-// LOGIN
-document.getElementById("loginBtn").onclick = () => {
-  if(
-    document.getElementById("username").value==="admin" &&
-    document.getElementById("password").value==="1234"
-  ){
-    document.getElementById("loginScreen").style.display="none";
-  } else {
-    document.getElementById("error").style.display="block";
+loginBtn.onclick=()=>{
+  if(username.value==="admin" && password.value==="1234"){
+    loginScreen.style.display="none";
   }
-};
+}
 
-// LOAD DATA
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -181,106 +195,32 @@ async function load(){
 }
 
 function render(){
-  document.getElementById("grid").innerHTML = items.map((it,i)=>`
-  <div class="card">
-    <img src="https://source.unsplash.com/400x300/?technology">
+  const q = searchInput.value.toLowerCase();
+  grid.innerHTML = items
+  .filter(i=>i.title.toLowerCase().includes(q))
+  .map((it,i)=>`
+  <div class="card" onclick="window.open('${it.link}')">
+    <img src="https://source.unsplash.com/400x300/?tech">
     <div class="card-body">
       <h3>${it.title}</h3>
-      <button onclick="preview('${it.link}')">Preview</button>
-      <button onclick="edit(${i})">Edit</button>
-      <button onclick="del(${i})">Delete</button>
+      <button onclick="event.stopPropagation();edit(${i})">Edit</button>
+      <button onclick="event.stopPropagation();del(${i})">Delete</button>
     </div>
-  </div>`).join("");
+  </div>`).join('');
 }
 
-// DRAG DROP
-const dropZone = document.getElementById("dropZone");
+searchInput.oninput=render;
 
-dropZone.addEventListener("dragover", e=>{
-  e.preventDefault();
-  dropZone.classList.add("dragover");
-});
-
-dropZone.addEventListener("dragleave", ()=>{
-  dropZone.classList.remove("dragover");
-});
-
-dropZone.addEventListener("drop", e=>{
-  e.preventDefault();
-  dropZone.classList.remove("dragover");
-  const file = e.dataTransfer.files[0];
-  handleFile(file);
-});
-
-// FILE INPUT
-document.getElementById("fileInput").onchange = e=>{
-  const file = e.target.files[0];
-  handleFile(file);
-};
-
-// HANDLE FILE
-async function handleFile(file){
-  if(!file) return;
-
-  const title = file.name;
-  const link = prompt("Paste OneDrive link for this file:");
-
-  if(!link) return;
-
-  await db.collection("ppts").add({title, link});
-  load();
-}
-
-// ADD BY LINK
-async function addByLink(){
-  const link = prompt("Paste OneDrive link:");
-  if(!link) return;
-
-  const title = prompt("Enter title:");
-  if(!title) return;
-
-  await db.collection("ppts").add({title, link});
-  load();
-}
-
-// DELETE
 async function del(i){
   await db.collection("ppts").doc(items[i].id).delete();
   load();
 }
 
-// EDIT
 async function edit(i){
-  const t = prompt("Title",items[i].title);
-  const l = prompt("Link",items[i].link);
-  if(!t || !l) return;
+  const t=prompt("Title",items[i].title);
+  const l=prompt("Link",items[i].link);
   await db.collection("ppts").doc(items[i].id).update({title:t,link:l});
   load();
-}
-
-// PREVIEW FIX
-function preview(link){
-  let embedLink = link;
-
-  if(link.includes("onedrive.live.com") && !link.includes("embed")){
-    try{
-      const url = new URL(link);
-      const resid = url.searchParams.get("resid");
-      const authkey = url.searchParams.get("authkey");
-
-      if(resid){
-        embedLink = `https://onedrive.live.com/embed?resid=${resid}${authkey ? `&authkey=${authkey}` : ""}`;
-      }
-    }catch(e){}
-  }
-
-  document.getElementById("pptFrame").src = embedLink;
-  document.getElementById("previewModal").style.display="block";
-}
-
-function closePreview(){
-  document.getElementById("previewModal").style.display="none";
-  document.getElementById("pptFrame").src="";
 }
 
 load();
