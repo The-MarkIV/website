@@ -11,9 +11,10 @@ body{
   font-family:'Poppins',sans-serif;
   margin:0;
   color:#fff;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 }
 
-/* 🤖 AI BACKGROUND */
+/* 🌌 AI BACKGROUND */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -21,74 +22,32 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-
   background:
-    linear-gradient(rgba(10,15,28,0.8), rgba(10,15,28,0.9)),
-    url('https://images.unsplash.com/photo-1677442136019-21780ecad995') center/cover no-repeat;
-
-  overflow:hidden;
+    radial-gradient(circle at 20% 20%, rgba(0,255,255,0.15), transparent),
+    radial-gradient(circle at 80% 80%, rgba(0,150,255,0.15), transparent),
+    #0f2027;
 }
 
-/* GRID (FIXED LAYER) */
-#loginScreen::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size:40px 40px;
-  animation:moveGrid 20s linear infinite;
-  z-index:0; /* 🔥 behind */
-}
-
-/* GLOW */
-#loginScreen::after{
-  content:"";
-  position:absolute;
-  width:600px;
-  height:600px;
-  background:radial-gradient(circle, rgba(0,255,255,0.2), transparent);
-  top:-100px;
-  left:-100px;
-  animation:float 10s ease-in-out infinite alternate;
-  z-index:0; /* 🔥 behind */
-}
-
-@keyframes moveGrid{
-  from{ transform:translate(0,0); }
-  to{ transform:translate(40px,40px); }
-}
-
-@keyframes float{
-  from{ transform:translate(0,0); }
-  to{ transform:translate(120px,100px); }
-}
-
-/* LOGO */
+/* LOGO TOP */
 .logo-top{
   position:absolute;
   top:20px;
   left:30px;
-  z-index:2;
 }
 
 .logo-top img{
   width:160px;
 }
 
-/* LOGIN BOX (ON TOP) */
+/* LOGIN BOX */
 .login-box-modern{
-  position:relative;
-  z-index:2; /* 🔥 THIS FIXES CLICK ISSUE */
   width:420px;
   padding:40px;
   border-radius:20px;
-  background:rgba(0,0,0,0.5);
+  background:rgba(255,255,255,0.08);
   backdrop-filter:blur(15px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.8);
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
   text-align:center;
-  border:1px solid rgba(0,255,255,0.3);
 }
 
 /* HEADER */
@@ -102,6 +61,10 @@ body{
 
 .mini-logo{
   width:35px;
+}
+
+.login-header h2{
+  color:white;
 }
 
 /* INPUT */
@@ -132,11 +95,61 @@ body{
 .login-box-modern button:hover{
   transform:scale(1.05);
 }
+
+/* NAVBAR */
+.navbar{
+  padding:15px 30px;
+  background:rgba(255,255,255,0.08);
+}
+
+/* CONTAINER */
+.container{ padding:30px; }
+
+/* SEARCH */
+#searchInput{
+  width:100%;
+  padding:12px;
+  margin-bottom:20px;
+  border-radius:10px;
+  border:none;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.card img{
+  width:100%;
+  height:150px;
+}
+
+.card-body{ padding:10px; }
+
+/* UPLOADER */
+.uploader{
+  border:2px dashed rgba(255,255,255,.3);
+  padding:25px;
+  text-align:center;
+  border-radius:12px;
+  margin-bottom:20px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen">
 
   <div class="logo-top">
@@ -160,12 +173,112 @@ body{
 
 </div>
 
+<!-- MAIN -->
+<div class="navbar"><h2>Temple of Learning</h2></div>
+
+<div class="container">
+
+<input type="text" id="searchInput" placeholder="🔍 Search PPT...">
+
+<div class="uploader" id="dropZone">
+  <p>📂 Drag & Drop PPT</p>
+  <input type="file" id="fileInput">
+  <button onclick="addByLink()">Add Link</button>
+</div>
+
+<div id="grid" class="grid"></div>
+
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "temple-of-learning.firebaseapp.com",
+  projectId: "temple-of-learning"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let items=[];
+
+// LOGIN
 loginBtn.onclick=()=>{
   if(username.value==="admin" && password.value==="1234"){
     loginScreen.style.display="none";
   } else error.style.display="block";
 };
+
+// LOAD
+async function load(){
+  const snap = await db.collection("ppts").get();
+  items = snap.docs.map(d=>({id:d.id,...d.data()}));
+  render();
+}
+
+// RENDER
+function render(){
+  const q=searchInput.value.toLowerCase();
+  grid.innerHTML = items
+  .filter(i=>i.title.toLowerCase().includes(q))
+  .map((it,i)=>`
+  <div class="card" onclick="window.open('${it.link}')">
+    <img src="https://source.unsplash.com/400x300/?technology">
+    <div class="card-body">
+      <h3>${it.title}</h3>
+      <button onclick="event.stopPropagation();edit(${i})">Edit</button>
+      <button onclick="event.stopPropagation();del(${i})">Delete</button>
+    </div>
+  </div>`).join('');
+}
+
+searchInput.oninput=render;
+
+// DELETE
+async function del(i){
+  await db.collection("ppts").doc(items[i].id).delete();
+  load();
+}
+
+// EDIT
+async function edit(i){
+  const t=prompt("Title",items[i].title);
+  const l=prompt("Link",items[i].link);
+  await db.collection("ppts").doc(items[i].id).update({title:t,link:l});
+  load();
+}
+
+// ADD FILE
+fileInput.onchange=e=>{
+  const file=e.target.files[0];
+  const link=prompt("Paste OneDrive link:");
+  db.collection("ppts").add({title:file.name,link});
+  load();
+};
+
+// ADD LINK
+function addByLink(){
+  const link=prompt("Paste link:");
+  const title=prompt("Title:");
+  db.collection("ppts").add({title,link});
+  load();
+}
+
+// DRAG
+dropZone.ondragover=e=>e.preventDefault();
+dropZone.ondrop=e=>{
+  e.preventDefault();
+  const file=e.dataTransfer.files[0];
+  const link=prompt("Paste link:");
+  db.collection("ppts").add({title:file.name,link});
+  load();
+};
+
+load();
 </script>
 
 </body>
