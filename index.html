@@ -11,13 +11,13 @@
 
 /* BASE */
 body{
-  font-family:'Poppins',sans-serif;
   margin:0;
-  color:#fff;
-  overflow-x:hidden;
+  font-family:'Poppins',sans-serif;
+  color:white;
+  overflow:hidden;
 }
 
-/* 🎥 MAIN VIDEO (FIXED) */
+/* 🎥 MAIN VIDEO */
 .bg-video-main{
   position:fixed;
   top:0;
@@ -28,30 +28,18 @@ body{
   z-index:-1;
 }
 
-/* 🌑 LIGHTER OVERLAY */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.3); /* FIXED */
-  z-index:0;
-}
-
 /* LOGIN SCREEN */
 #loginScreen{
   position:fixed;
   inset:0;
   display:flex;
-  flex-direction:column;
-  align-items:center;
   justify-content:center;
-  z-index:10;
+  align-items:center;
   background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(8px);
-  transition:opacity 0.5s ease;
+  z-index:10;
 }
 
-/* 🎥 LOGIN VIDEO (FIXED) */
+/* LOGIN VIDEO */
 .bg-video{
   position:absolute;
   width:100%;
@@ -67,24 +55,15 @@ body::before{
   top:20px;
   left:30px;
 }
+.logo-top img{ width:150px; }
 
-.logo-top img{
-  width:180px;
-  filter: drop-shadow(0 0 10px orange);
-}
-
-.mini-logo{
-  width:60px;
-  margin-bottom:10px;
-}
+.mini-logo{ width:50px; }
 
 /* LOGIN BOX */
 .login-box-modern{
-  width:400px;
+  background:rgba(0,0,0,0.7);
   padding:40px;
   border-radius:20px;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(15px);
   text-align:center;
 }
 
@@ -94,101 +73,54 @@ body::before{
   padding:12px;
   margin:10px 0;
   border:none;
-  border-bottom:1px solid rgba(255,255,255,0.3);
-  background:transparent;
-  color:white;
 }
 
 /* BUTTON */
 .login-box-modern button{
   width:100%;
   padding:12px;
+  background:orange;
   border:none;
-  border-radius:10px;
-  background:linear-gradient(45deg,#ff9800,#ff5722);
   color:white;
-  cursor:pointer;
+  border-radius:10px;
 }
 
 /* NAVBAR */
 .navbar{
-  padding:15px 30px;
-  background:rgba(0,0,0,0.5);
+  padding:15px;
+  background:rgba(0,0,0,0.6);
   display:flex;
   align-items:center;
-  position:relative;
-  z-index:2;
 }
-
-.nav-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.nav-logo{
-  width:50px;
-}
+.nav-logo{ width:40px; margin-right:10px; }
 
 /* MAIN */
-.container{
-  padding:30px;
-  position:relative;
-  z-index:2;
-}
+.container{ padding:20px; }
 
-#searchInput{
-  width:100%;
-  padding:12px;
-  margin-bottom:20px;
-  border-radius:10px;
-  border:none;
-}
-
-/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:15px;
 }
 
-/* CARD */
 .card{
-  background:rgba(0,0,0,0.5);
-  border-radius:12px;
+  background:rgba(0,0,0,0.6);
+  border-radius:10px;
   overflow:hidden;
 }
+.card img{ width:100%; height:120px; object-fit:cover; }
 
-.card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-}
-
-.card-body{ padding:10px; }
-
-/* UPLOADER */
-.uploader{
-  border:2px dashed rgba(255,255,255,.3);
-  padding:25px;
-  text-align:center;
-  border-radius:12px;
-  margin-bottom:20px;
-}
+.hidden{ display:none; }
 
 /* MODAL */
 #previewModal{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.9);
-  z-index:100;
+  background:black;
+  z-index:20;
   justify-content:center;
   align-items:center;
-}
-
-.hidden{
-  display:none;
 }
 
 </style>
@@ -196,16 +128,16 @@ body::before{
 
 <body>
 
-<!-- 🎥 MAIN VIDEO (FIRST) -->
-<video autoplay muted loop playsinline class="bg-video-main">
-  <source src="bg2.mp4" type="video/mp4">
+<!-- 🎥 MAIN VIDEO -->
+<video class="bg-video-main" autoplay muted loop playsinline>
+  <source src="./bg2.mp4" type="video/mp4">
 </video>
 
 <!-- LOGIN -->
 <div id="loginScreen">
 
-  <video autoplay muted loop playsinline class="bg-video">
-    <source src="bg1.mp4" type="video/mp4">
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="./bg1.mp4" type="video/mp4">
   </video>
 
   <div class="logo-top">
@@ -218,7 +150,6 @@ body::before{
     <input id="username" placeholder="Username">
     <input id="password" type="password">
     <button id="loginBtn">Sign In</button>
-    <p id="error" style="color:red;display:none;">Wrong login</p>
   </div>
 
 </div>
@@ -227,20 +158,12 @@ body::before{
 <div id="mainContent" class="hidden">
 
   <div class="navbar">
-    <div class="nav-left">
-      <img src="logo.png" class="nav-logo">
-      <h2>Temple of Learning</h2>
-    </div>
+    <img src="logo.png" class="nav-logo">
+    <h2>Temple of Learning</h2>
   </div>
 
   <div class="container">
-    <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
-
-    <div class="uploader" id="dropZone">
-      <p>📂 Drag & Drop PPT</p>
-      <input type="file" id="fileInput">
-      <button onclick="addByLink()">Add Link</button>
-    </div>
+    <input id="searchInput" placeholder="Search..." style="width:100%; padding:10px;">
 
     <div id="grid" class="grid"></div>
   </div>
@@ -249,15 +172,9 @@ body::before{
 
 <!-- MODAL -->
 <div id="previewModal">
-  <div style="width:85%; height:85%; background:#000; position:relative;">
-    <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
-    <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
-    <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
-    <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
-  </div>
+  <iframe id="previewFrame" style="width:90%; height:90%;"></iframe>
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
@@ -275,125 +192,40 @@ const db = firebase.firestore();
 let items = [];
 let currentIndex = 0;
 
+/* LOGIN */
 loginBtn.onclick = ()=>{
   if(username.value==="admin" && password.value==="1234"){
-    loginScreen.style.opacity = "0";
-    setTimeout(()=>{
-      loginScreen.style.display="none";
-      mainContent.classList.remove("hidden");
-    },500);
-  } else error.style.display="block";
+    loginScreen.style.display="none";
+    mainContent.classList.remove("hidden");
+  }
 };
 
+/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
   render();
 }
 
+/* RENDER */
 function render(){
-  const q = searchInput.value.toLowerCase();
-
-  grid.innerHTML = items
-  .filter(i => (i.title || "").toLowerCase().includes(q))
-  .map((it,i)=>`
+  grid.innerHTML = items.map((it,i)=>`
   <div class="card">
-    <img src="${it.thumbnail || 'https://via.placeholder.com/400x300'}">
-    <div class="card-body">
-      <h3>${it.title || "Untitled"}</h3>
-      <button onclick="openPreview('${it.link}', ${i})">Preview</button>
-      <button onclick="edit(${i})">Edit</button>
-      <button onclick="del(${i})">Delete</button>
-    </div>
-  </div>`).join('');
+    <img src="${it.thumbnail || 'https://via.placeholder.com/300'}">
+    <h3>${it.title}</h3>
+    <button onclick="openPreview('${it.link}',${i})">Preview</button>
+  </div>
+  `).join('');
 }
 
-searchInput.oninput = render;
-
+/* PREVIEW */
 function openPreview(link,index){
-  currentIndex = index;
-  previewModal.style.display = "flex";
-  previewFrame.src = link;
+  currentIndex=index;
+  previewModal.style.display="flex";
+  previewFrame.src=link;
 }
 
-function closePreview(){
-  previewModal.style.display = "none";
-  previewFrame.src = "";
-}
-
-function nextSlide(){
-  currentIndex = (currentIndex + 1) % items.length;
-  previewFrame.src = items[currentIndex].link;
-}
-
-function prevSlide(){
-  currentIndex = (currentIndex - 1 + items.length) % items.length;
-  previewFrame.src = items[currentIndex].link;
-}
-
-async function del(i){
-  await db.collection("ppts").doc(items[i].id).delete();
-  load();
-}
-
-async function edit(i){
-  const t = prompt("Title", items[i].title);
-  const l = prompt("Link", items[i].link);
-  const th = prompt("Thumbnail", items[i].thumbnail || "");
-
-  await db.collection("ppts").doc(items[i].id).update({
-    title: t || "Untitled",
-    link: l || "#",
-    thumbnail: th || ""
-  });
-
-  load();
-}
-
-fileInput.onchange = e=>{
-  const file = e.target.files[0];
-  const link = prompt("Paste link:");
-  const thumb = prompt("Thumbnail link:");
-
-  db.collection("ppts").add({
-    title: file?.name || "Untitled",
-    link: link || "#",
-    thumbnail: thumb || ""
-  });
-
-  load();
-};
-
-function addByLink(){
-  const link = prompt("Paste link:");
-  const title = prompt("Title:");
-  const thumb = prompt("Thumbnail link:");
-
-  db.collection("ppts").add({
-    title: title || "Untitled",
-    link: link || "#",
-    thumbnail: thumb || ""
-  });
-
-  load();
-}
-
-dropZone.ondragover = e=>e.preventDefault();
-
-dropZone.ondrop = e=>{
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  const link = prompt("Paste link:");
-  const thumb = prompt("Thumbnail link:");
-
-  db.collection("ppts").add({
-    title: file?.name || "Untitled",
-    link: link || "#",
-    thumbnail: thumb || ""
-  });
-
-  load();
-};
+previewModal.onclick=()=>previewModal.style.display="none";
 
 load();
 
