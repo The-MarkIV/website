@@ -9,7 +9,7 @@
 
 <style>
 
-/* 🌌 BASE */
+/* BASE */
 body{
   font-family:'Poppins',sans-serif;
   margin:0;
@@ -17,7 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* 🎥 MAIN VIDEO */
+/* MAIN VIDEO */
 .bg-video-main{
   position:fixed;
   top:0;
@@ -37,7 +37,7 @@ body::before{
   z-index:-1;
 }
 
-/* LOGIN SCREEN */
+/* LOGIN SCREEN FIXED */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -45,7 +45,11 @@ body::before{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  z-index:10;
+  z-index:9999;
+
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(10px);
+  transition:opacity 0.5s ease;
 }
 
 /* LOGIN VIDEO */
@@ -55,7 +59,7 @@ body::before{
   height:100%;
   object-fit:cover;
   z-index:-1;
-  opacity:0.6;
+  opacity:0.4;
 }
 
 /* LOGO */
@@ -193,12 +197,17 @@ body::before{
   align-items:center;
 }
 
+/* HIDDEN */
+.hidden{
+  display:none;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- 🎥 MAIN BACKGROUND VIDEO -->
+<!-- MAIN VIDEO -->
 <video autoplay muted loop playsinline class="bg-video-main">
   <source src="bg2.mp4" type="video/mp4">
 </video>
@@ -206,7 +215,6 @@ body::before{
 <!-- LOGIN -->
 <div id="loginScreen">
 
-  <!-- 🎥 LOGIN VIDEO -->
   <video autoplay muted loop playsinline class="bg-video">
     <source src="bg1.mp4" type="video/mp4">
   </video>
@@ -226,26 +234,29 @@ body::before{
 
 </div>
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div class="nav-left">
-    <img src="logo.png" class="nav-logo">
-    <h2>Temple of Learning</h2>
+<!-- MAIN CONTENT (HIDDEN INITIALLY) -->
+<div id="mainContent" class="hidden">
+
+  <div class="navbar">
+    <div class="nav-left">
+      <img src="logo.png" class="nav-logo">
+      <h2>Temple of Learning</h2>
+    </div>
   </div>
-</div>
 
-<!-- MAIN -->
-<div class="container">
+  <div class="container">
 
-<input type="text" id="searchInput" placeholder="🔍 Search PPT...">
+    <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
 
-<div class="uploader" id="dropZone">
-  <p>📂 Drag & Drop PPT</p>
-  <input type="file" id="fileInput">
-  <button onclick="addByLink()">Add Link</button>
-</div>
+    <div class="uploader" id="dropZone">
+      <p>📂 Drag & Drop PPT</p>
+      <input type="file" id="fileInput">
+      <button onclick="addByLink()">Add Link</button>
+    </div>
 
-<div id="grid" class="grid"></div>
+    <div id="grid" class="grid"></div>
+
+  </div>
 
 </div>
 
@@ -277,10 +288,16 @@ const db = firebase.firestore();
 let items = [];
 let currentIndex = 0;
 
-/* LOGIN */
+/* LOGIN FIXED */
 loginBtn.onclick = ()=>{
   if(username.value==="admin" && password.value==="1234"){
-    loginScreen.style.display="none";
+    loginScreen.style.opacity = "0";
+
+    setTimeout(()=>{
+      loginScreen.style.display="none";
+      mainContent.classList.remove("hidden");
+    },500);
+
   } else error.style.display="block";
 };
 
@@ -354,7 +371,7 @@ async function edit(i){
   load();
 }
 
-/* ADD FILE */
+/* ADD */
 fileInput.onchange = e=>{
   const file = e.target.files[0];
   const link = prompt("Paste link:");
@@ -369,7 +386,6 @@ fileInput.onchange = e=>{
   load();
 };
 
-/* ADD LINK */
 function addByLink(){
   const link = prompt("Paste link:");
   const title = prompt("Title:");
