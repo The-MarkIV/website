@@ -9,23 +9,35 @@
 
 <style>
 
-/* 🌌 BACKGROUND */
+/* 🌌 BASE */
 body{
   font-family:'Poppins',sans-serif;
   margin:0;
   color:#fff;
-  background:linear-gradient(270deg,#0f2027,#203a43,#2c5364,#1a2a6c);
-  background-size:600% 600%;
-  animation:bgMove 15s ease infinite;
+  overflow-x:hidden;
 }
 
-@keyframes bgMove{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+/* 🎥 MAIN VIDEO */
+.bg-video-main{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
 }
 
-/* LOGIN */
+/* DARK OVERLAY */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:-1;
+}
+
+/* LOGIN SCREEN */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -33,11 +45,17 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0,255,255,0.15), transparent),
-    radial-gradient(circle at 80% 70%, rgba(0,150,255,0.15), transparent),
-    #0f2027;
   z-index:10;
+}
+
+/* LOGIN VIDEO */
+.bg-video{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  opacity:0.6;
 }
 
 /* LOGO */
@@ -180,8 +198,18 @@ body{
 
 <body>
 
+<!-- 🎥 MAIN BACKGROUND VIDEO -->
+<video autoplay muted loop playsinline class="bg-video-main">
+  <source src="bg2.mp4" type="video/mp4">
+</video>
+
 <!-- LOGIN -->
 <div id="loginScreen">
+
+  <!-- 🎥 LOGIN VIDEO -->
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="bg1.mp4" type="video/mp4">
+  </video>
 
   <div class="logo-top">
     <img src="logo.png">
@@ -221,14 +249,12 @@ body{
 
 </div>
 
-<!-- PREVIEW MODAL -->
+<!-- MODAL -->
 <div id="previewModal">
   <div style="width:85%; height:85%; background:#000; border-radius:12px; position:relative;">
-
     <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
     <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
     <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
-
     <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
   </div>
 </div>
