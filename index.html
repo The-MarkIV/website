@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Temple of Learning</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -14,7 +15,7 @@ body{
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 }
 
-/* 🌌 AI BACKGROUND */
+/* LOGIN SCREEN */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -22,13 +23,11 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,255,255,0.15), transparent),
-    radial-gradient(circle at 80% 80%, rgba(0,150,255,0.15), transparent),
-    #0f2027;
+  background:#0f2027;
+  z-index:10;
 }
 
-/* LOGO TOP */
+/* TOP LOGO */
 .logo-top{
   position:absolute;
   top:20px;
@@ -36,35 +35,25 @@ body{
 }
 
 .logo-top img{
-  width:160px;
+  width:180px;
+  filter: drop-shadow(0 0 10px orange);
 }
 
 /* LOGIN BOX */
 .login-box-modern{
-  width:420px;
+  width:400px;
   padding:40px;
   border-radius:20px;
   background:rgba(255,255,255,0.08);
   backdrop-filter:blur(15px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.6);
   text-align:center;
 }
 
-/* HEADER */
-.login-header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:20px;
-}
-
+/* MINI LOGO */
 .mini-logo{
-  width:35px;
-}
-
-.login-header h2{
-  color:white;
+  width:60px;
+  margin-bottom:10px;
+  filter: drop-shadow(0 0 8px orange);
 }
 
 /* INPUT */
@@ -76,19 +65,16 @@ body{
   border-bottom:1px solid rgba(255,255,255,0.3);
   background:transparent;
   color:white;
-  outline:none;
 }
 
 /* BUTTON */
 .login-box-modern button{
   width:100%;
   padding:12px;
-  margin-top:15px;
   border:none;
   border-radius:10px;
   background:linear-gradient(45deg,#ff9800,#ff5722);
   color:white;
-  font-weight:bold;
   cursor:pointer;
 }
 
@@ -102,10 +88,9 @@ body{
   background:rgba(255,255,255,0.08);
 }
 
-/* CONTAINER */
+/* MAIN */
 .container{ padding:30px; }
 
-/* SEARCH */
 #searchInput{
   width:100%;
   padding:12px;
@@ -127,11 +112,17 @@ body{
   border-radius:12px;
   overflow:hidden;
   cursor:pointer;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.05);
 }
 
 .card img{
   width:100%;
   height:150px;
+  object-fit:cover;
 }
 
 .card-body{ padding:10px; }
@@ -152,16 +143,17 @@ body{
 <!-- LOGIN -->
 <div id="loginScreen">
 
+  <!-- TOP LOGO -->
   <div class="logo-top">
-    <img src="logo.png">
+    <img src="logo.png" alt="Temple Logo">
   </div>
 
   <div class="login-box-modern">
 
-    <div class="login-header">
-      <img src="logo.png" class="mini-logo">
-      <h2>Sign In</h2>
-    </div>
+    <!-- MINI LOGO -->
+    <img src="logo.png" class="mini-logo" alt="Logo">
+
+    <h2>Sign In</h2>
 
     <input id="username" placeholder="Username">
     <input id="password" type="password" placeholder="Password">
@@ -204,77 +196,105 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let items=[];
+let items = [];
 
-// LOGIN
-loginBtn.onclick=()=>{
+/* LOGIN */
+loginBtn.onclick = () => {
   if(username.value==="admin" && password.value==="1234"){
     loginScreen.style.display="none";
-  } else error.style.display="block";
+  } else {
+    error.style.display="block";
+  }
 };
 
-// LOAD
+/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
+
+  console.log("DATA:", items);
+
   render();
 }
 
-// RENDER
+/* RENDER (SAFE) */
 function render(){
-  const q=searchInput.value.toLowerCase();
+  const q = searchInput.value.toLowerCase();
+
   grid.innerHTML = items
-  .filter(i=>i.title.toLowerCase().includes(q))
+  .filter(i => (i.title || "").toLowerCase().includes(q))
   .map((it,i)=>`
-  <div class="card" onclick="window.open('${it.link}')">
-    <img src="https://source.unsplash.com/400x300/?technology">
+  <div class="card" onclick="window.open('${it.link || "#"}')">
+    <img src="https://via.placeholder.com/400x300">
     <div class="card-body">
-      <h3>${it.title}</h3>
+      <h3>${it.title || "Untitled"}</h3>
       <button onclick="event.stopPropagation();edit(${i})">Edit</button>
       <button onclick="event.stopPropagation();del(${i})">Delete</button>
     </div>
   </div>`).join('');
 }
 
-searchInput.oninput=render;
+searchInput.oninput = render;
 
-// DELETE
+/* DELETE */
 async function del(i){
   await db.collection("ppts").doc(items[i].id).delete();
   load();
 }
 
-// EDIT
+/* EDIT */
 async function edit(i){
-  const t=prompt("Title",items[i].title);
-  const l=prompt("Link",items[i].link);
-  await db.collection("ppts").doc(items[i].id).update({title:t,link:l});
+  const t = prompt("Title", items[i].title);
+  const l = prompt("Link", items[i].link);
+
+  await db.collection("ppts").doc(items[i].id).update({
+    title: t || "Untitled",
+    link: l || "#"
+  });
+
   load();
 }
 
-// ADD FILE
-fileInput.onchange=e=>{
-  const file=e.target.files[0];
-  const link=prompt("Paste OneDrive link:");
-  db.collection("ppts").add({title:file.name,link});
+/* ADD FILE */
+fileInput.onchange = e => {
+  const file = e.target.files[0];
+  const link = prompt("Paste OneDrive link:");
+
+  db.collection("ppts").add({
+    title: file?.name || "Untitled",
+    link: link || "#"
+  });
+
   load();
 };
 
-// ADD LINK
+/* ADD LINK */
 function addByLink(){
-  const link=prompt("Paste link:");
-  const title=prompt("Title:");
-  db.collection("ppts").add({title,link});
+  const link = prompt("Paste link:");
+  const title = prompt("Title:");
+
+  db.collection("ppts").add({
+    title: title || "Untitled",
+    link: link || "#"
+  });
+
   load();
 }
 
-// DRAG
-dropZone.ondragover=e=>e.preventDefault();
-dropZone.ondrop=e=>{
+/* DRAG */
+dropZone.ondragover = e => e.preventDefault();
+
+dropZone.ondrop = e => {
   e.preventDefault();
-  const file=e.dataTransfer.files[0];
-  const link=prompt("Paste link:");
-  db.collection("ppts").add({title:file.name,link});
+
+  const file = e.dataTransfer.files[0];
+  const link = prompt("Paste link:");
+
+  db.collection("ppts").add({
+    title: file?.name || "Untitled",
+    link: link || "#"
+  });
+
   load();
 };
 
