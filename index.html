@@ -17,7 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* MAIN VIDEO */
+/* 🎥 MAIN VIDEO (FIXED) */
 .bg-video-main{
   position:fixed;
   top:0;
@@ -25,19 +25,19 @@ body{
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:-2;
+  z-index:-1;
 }
 
-/* DARK OVERLAY */
+/* 🌑 LIGHTER OVERLAY */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
-  z-index:-1;
+  background:rgba(0,0,0,0.3); /* FIXED */
+  z-index:0;
 }
 
-/* LOGIN SCREEN FIXED */
+/* LOGIN SCREEN */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -45,21 +45,20 @@ body::before{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  z-index:9999;
-
-  background:rgba(0,0,0,0.8);
-  backdrop-filter:blur(10px);
+  z-index:10;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
   transition:opacity 0.5s ease;
 }
 
-/* LOGIN VIDEO */
+/* 🎥 LOGIN VIDEO (FIXED) */
 .bg-video{
   position:absolute;
   width:100%;
   height:100%;
   object-fit:cover;
   z-index:-1;
-  opacity:0.4;
+  opacity:0.5;
 }
 
 /* LOGO */
@@ -77,7 +76,6 @@ body::before{
 .mini-logo{
   width:60px;
   margin-bottom:10px;
-  filter: drop-shadow(0 0 8px orange);
 }
 
 /* LOGIN BOX */
@@ -85,10 +83,9 @@ body::before{
   width:400px;
   padding:40px;
   border-radius:20px;
-  background:rgba(255,255,255,0.08);
+  background:rgba(0,0,0,0.6);
   backdrop-filter:blur(15px);
   text-align:center;
-  box-shadow:0 0 30px rgba(0,255,255,0.2);
 }
 
 /* INPUT */
@@ -100,10 +97,6 @@ body::before{
   border-bottom:1px solid rgba(255,255,255,0.3);
   background:transparent;
   color:white;
-}
-
-.login-box-modern input:focus{
-  border-bottom:1px solid cyan;
 }
 
 /* BUTTON */
@@ -120,9 +113,11 @@ body::before{
 /* NAVBAR */
 .navbar{
   padding:15px 30px;
-  background:rgba(255,255,255,0.08);
+  background:rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
+  position:relative;
+  z-index:2;
 }
 
 .nav-left{
@@ -133,11 +128,14 @@ body::before{
 
 .nav-logo{
   width:50px;
-  filter: drop-shadow(0 0 8px orange);
 }
 
 /* MAIN */
-.container{ padding:30px; }
+.container{
+  padding:30px;
+  position:relative;
+  z-index:2;
+}
 
 #searchInput{
   width:100%;
@@ -156,17 +154,9 @@ body::before{
 
 /* CARD */
 .card{
-  background:rgba(255,255,255,0.08);
+  background:rgba(0,0,0,0.5);
   border-radius:12px;
   overflow:hidden;
-  cursor:pointer;
-  transition:0.3s;
-  backdrop-filter:blur(10px);
-}
-
-.card:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 20px rgba(0,255,255,0.4);
 }
 
 .card img{
@@ -191,13 +181,12 @@ body::before{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
-  z-index:999;
+  background:rgba(0,0,0,0.9);
+  z-index:100;
   justify-content:center;
   align-items:center;
 }
 
-/* HIDDEN */
 .hidden{
   display:none;
 }
@@ -207,7 +196,7 @@ body::before{
 
 <body>
 
-<!-- MAIN VIDEO -->
+<!-- 🎥 MAIN VIDEO (FIRST) -->
 <video autoplay muted loop playsinline class="bg-video-main">
   <source src="bg2.mp4" type="video/mp4">
 </video>
@@ -234,7 +223,7 @@ body::before{
 
 </div>
 
-<!-- MAIN CONTENT (HIDDEN INITIALLY) -->
+<!-- MAIN CONTENT -->
 <div id="mainContent" class="hidden">
 
   <div class="navbar">
@@ -245,7 +234,6 @@ body::before{
   </div>
 
   <div class="container">
-
     <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
 
     <div class="uploader" id="dropZone">
@@ -255,14 +243,13 @@ body::before{
     </div>
 
     <div id="grid" class="grid"></div>
-
   </div>
 
 </div>
 
 <!-- MODAL -->
 <div id="previewModal">
-  <div style="width:85%; height:85%; background:#000; border-radius:12px; position:relative;">
+  <div style="width:85%; height:85%; background:#000; position:relative;">
     <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
     <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
     <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
@@ -288,27 +275,22 @@ const db = firebase.firestore();
 let items = [];
 let currentIndex = 0;
 
-/* LOGIN FIXED */
 loginBtn.onclick = ()=>{
   if(username.value==="admin" && password.value==="1234"){
     loginScreen.style.opacity = "0";
-
     setTimeout(()=>{
       loginScreen.style.display="none";
       mainContent.classList.remove("hidden");
     },500);
-
   } else error.style.display="block";
 };
 
-/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
   render();
 }
 
-/* RENDER */
 function render(){
   const q = searchInput.value.toLowerCase();
 
@@ -328,7 +310,6 @@ function render(){
 
 searchInput.oninput = render;
 
-/* PREVIEW */
 function openPreview(link,index){
   currentIndex = index;
   previewModal.style.display = "flex";
@@ -350,13 +331,11 @@ function prevSlide(){
   previewFrame.src = items[currentIndex].link;
 }
 
-/* DELETE */
 async function del(i){
   await db.collection("ppts").doc(items[i].id).delete();
   load();
 }
 
-/* EDIT */
 async function edit(i){
   const t = prompt("Title", items[i].title);
   const l = prompt("Link", items[i].link);
@@ -371,7 +350,6 @@ async function edit(i){
   load();
 }
 
-/* ADD */
 fileInput.onchange = e=>{
   const file = e.target.files[0];
   const link = prompt("Paste link:");
