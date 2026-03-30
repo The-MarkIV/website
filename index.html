@@ -9,7 +9,7 @@
 
 <style>
 
-/* 🌌 BACKGROUND */
+/* BACKGROUND */
 body{
   font-family:'Poppins',sans-serif;
   margin:0;
@@ -18,7 +18,6 @@ body{
   background-size:600% 600%;
   animation:bgMove 15s ease infinite;
 }
-
 @keyframes bgMove{
   0%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
@@ -40,22 +39,27 @@ body{
   z-index:10;
 }
 
-/* LOGO */
+/* LOGOS */
 .logo-top{
   position:absolute;
   top:20px;
   left:30px;
 }
-
-.logo-top img{
+.logo-top img,
+.nav-logo,
+.mini-logo{
   width:180px;
   filter: drop-shadow(0 0 10px orange);
+  transition:0.3s;
 }
+.nav-logo{ width:50px; }
+.mini-logo{ width:60px; margin-bottom:10px; }
 
-.mini-logo{
-  width:60px;
-  margin-bottom:10px;
-  filter: drop-shadow(0 0 8px orange);
+.logo-top img:hover,
+.nav-logo:hover,
+.mini-logo:hover{
+  filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 40px gold);
+  transform:scale(1.05);
 }
 
 /* LOGIN BOX */
@@ -66,6 +70,11 @@ body{
   background:rgba(255,255,255,0.08);
   backdrop-filter:blur(15px);
   text-align:center;
+  box-shadow:0 0 30px rgba(0,255,255,0.2);
+  transition:0.3s;
+}
+.login-box-modern:hover{
+  box-shadow:0 0 50px rgba(0,255,255,0.5);
 }
 
 /* INPUT */
@@ -79,10 +88,6 @@ body{
   color:white;
 }
 
-.login-box-modern input:focus{
-  border-bottom:1px solid cyan;
-}
-
 /* BUTTON */
 .login-box-modern button{
   width:100%;
@@ -92,10 +97,11 @@ body{
   background:linear-gradient(45deg,#ff9800,#ff5722);
   color:white;
   cursor:pointer;
+  box-shadow:0 0 10px rgba(255,140,0,0.6);
+  transition:0.3s;
 }
-
 .login-box-modern button:hover{
-  transform:scale(1.05);
+  box-shadow:0 0 25px rgba(255,140,0,1);
 }
 
 /* NAVBAR */
@@ -105,16 +111,10 @@ body{
   display:flex;
   align-items:center;
 }
-
 .nav-left{
   display:flex;
   align-items:center;
   gap:10px;
-}
-
-.nav-logo{
-  width:50px;
-  filter: drop-shadow(0 0 8px orange);
 }
 
 /* MAIN */
@@ -140,21 +140,18 @@ body{
   background:rgba(255,255,255,0.08);
   border-radius:12px;
   overflow:hidden;
-  transition:0.3s;
   backdrop-filter:blur(10px);
+  transition:0.3s;
 }
-
 .card:hover{
   transform:scale(1.05);
-  box-shadow:0 0 20px rgba(0,255,255,0.4);
+  box-shadow:0 0 20px cyan, 0 0 40px rgba(0,255,255,0.5);
 }
-
 .card img{
   width:100%;
   height:150px;
   object-fit:cover;
 }
-
 .card-body{ padding:10px; }
 
 /* UPLOADER */
@@ -184,7 +181,6 @@ body{
 
 <!-- LOGIN -->
 <div id="loginScreen">
-
   <div class="logo-top">
     <img src="logo.png">
   </div>
@@ -194,12 +190,11 @@ body{
     <h2>Sign In</h2>
 
     <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+    <input id="password" type="password">
 
     <button id="loginBtn">Sign In</button>
     <p id="error" style="color:red;display:none;">Wrong login</p>
   </div>
-
 </div>
 
 <!-- NAVBAR -->
@@ -227,7 +222,7 @@ body{
 
 <!-- MODAL -->
 <div id="previewModal">
-  <div style="width:85%; height:85%; background:#000; border-radius:12px; position:relative;">
+  <div style="width:85%; height:85%; background:#000; position:relative;">
     <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
     <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
     <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
@@ -256,9 +251,7 @@ let currentIndex = 0;
 loginBtn.onclick = ()=>{
   if(username.value==="admin" && password.value==="1234"){
     loginScreen.style.display="none";
-  } else {
-    error.style.display="block";
-  }
+  } else error.style.display="block";
 };
 
 /* LOAD */
@@ -288,26 +281,40 @@ function render(){
 
 searchInput.oninput = render;
 
+/* AUTO EMBED */
+function getEmbedLink(link){
+  if(link.includes("docs.google.com/presentation")){
+    return link.replace("/edit","/embed").replace("/view","/embed");
+  }
+  if(link.includes("drive.google.com")){
+    const id = link.match(/[-\w]{25,}/);
+    if(id) return `https://drive.google.com/file/d/${id[0]}/preview`;
+  }
+  if(link.includes("onedrive") || link.includes("sharepoint")){
+    return link + (link.includes("?") ? "&" : "?") + "embed=1";
+  }
+  return link;
+}
+
 /* PREVIEW */
 function openPreview(link,index){
   currentIndex = index;
   previewModal.style.display = "flex";
-  previewFrame.src = link;
+  previewFrame.src = getEmbedLink(link);
 }
 
+/* NAVIGATION */
 function closePreview(){
   previewModal.style.display = "none";
   previewFrame.src = "";
 }
-
 function nextSlide(){
   currentIndex = (currentIndex + 1) % items.length;
-  previewFrame.src = items[currentIndex].link;
+  openPreview(items[currentIndex].link, currentIndex);
 }
-
 function prevSlide(){
   currentIndex = (currentIndex - 1 + items.length) % items.length;
-  previewFrame.src = items[currentIndex].link;
+  openPreview(items[currentIndex].link, currentIndex);
 }
 
 /* DELETE */
@@ -331,7 +338,7 @@ async function edit(i){
   load();
 }
 
-/* ADD FILE */
+/* ADD */
 fileInput.onchange = e=>{
   const file = e.target.files[0];
   const link = prompt("Paste link:");
@@ -346,7 +353,6 @@ fileInput.onchange = e=>{
   load();
 };
 
-/* ADD LINK */
 function addByLink(){
   const link = prompt("Paste link:");
   const title = prompt("Title:");
@@ -361,7 +367,6 @@ function addByLink(){
   load();
 }
 
-/* DRAG */
 dropZone.ondragover = e=>e.preventDefault();
 
 dropZone.ondrop = e=>{
