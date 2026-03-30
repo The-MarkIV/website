@@ -48,10 +48,10 @@ body{
 .logo-top img,
 .nav-logo,
 .mini-logo{
-  width:180px;
   filter: drop-shadow(0 0 10px orange);
   transition:0.3s;
 }
+.logo-top img{ width:180px; }
 .nav-logo{ width:50px; }
 .mini-logo{ width:60px; margin-bottom:10px; }
 
@@ -291,16 +291,30 @@ function getEmbedLink(link){
     if(id) return `https://drive.google.com/file/d/${id[0]}/preview`;
   }
   if(link.includes("onedrive") || link.includes("sharepoint")){
-    return link + (link.includes("?") ? "&" : "?") + "embed=1";
+    return link + "&action=embedview";
   }
   return link;
 }
 
-/* PREVIEW */
+/* PREVIEW (FINAL FIXED) */
 function openPreview(link,index){
   currentIndex = index;
+
+  const embedLink = getEmbedLink(link);
+
   previewModal.style.display = "flex";
-  previewFrame.src = getEmbedLink(link);
+  previewFrame.src = embedLink;
+
+  // 🔥 FALLBACK IF BLOCKED
+  setTimeout(()=>{
+    try{
+      if(previewFrame.contentWindow.location.href === "about:blank"){
+        window.open(link, "_blank");
+      }
+    }catch(e){
+      window.open(link, "_blank");
+    }
+  },1500);
 }
 
 /* NAVIGATION */
