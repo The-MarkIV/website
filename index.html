@@ -300,9 +300,7 @@ function getEmbedLink(link){
 /* PREVIEW */
 function openPreview(link,index){
   currentIndex = index;
-
   const embedLink = getEmbedLink(link);
-
   previewModal.style.display = "flex";
   previewFrame.src = embedLink;
 }
@@ -325,6 +323,57 @@ function prevSlide(){
   currentIndex = (currentIndex - 1 + items.length) % items.length;
   openPreview(items[currentIndex].link, currentIndex);
 }
+
+/* KEYBOARD CONTROLS */
+document.addEventListener("keydown", (e) => {
+
+  if(previewModal.style.display === "flex"){
+
+    if(e.key === "ArrowRight" || e.key === " "){
+      e.preventDefault();
+      nextSlide();
+    }
+
+    if(e.key === "ArrowLeft"){
+      prevSlide();
+    }
+
+    if(e.key === "Escape"){
+      closePreview();
+    }
+
+    if(e.key === "Enter"){
+      toggleFullscreen();
+    }
+
+  }
+
+});
+
+/* FULLSCREEN */
+function toggleFullscreen(){
+  const elem = previewModal;
+
+  if (!document.fullscreenElement){
+    elem.requestFullscreen().catch(err => console.log(err));
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+/* SWIPE */
+let startX = 0;
+
+previewModal.addEventListener("touchstart", (e)=>{
+  startX = e.touches[0].clientX;
+});
+
+previewModal.addEventListener("touchend", (e)=>{
+  let endX = e.changedTouches[0].clientX;
+
+  if(startX - endX > 50) nextSlide();
+  if(endX - startX > 50) prevSlide();
+});
 
 /* DELETE */
 async function del(i){
