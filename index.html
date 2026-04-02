@@ -273,6 +273,7 @@ function render(){
     <div class="card-body">
       <h3>${it.title || "Untitled"}</h3>
       <button onclick="openPreview('${it.link}', ${i})">Preview</button>
+      <button onclick="openNewTab('${it.link}')">Open</button>
       <button onclick="edit(${i})">Edit</button>
       <button onclick="del(${i})">Delete</button>
     </div>
@@ -296,7 +297,7 @@ function getEmbedLink(link){
   return link;
 }
 
-/* PREVIEW (FINAL FIXED) */
+/* PREVIEW */
 function openPreview(link,index){
   currentIndex = index;
 
@@ -304,17 +305,11 @@ function openPreview(link,index){
 
   previewModal.style.display = "flex";
   previewFrame.src = embedLink;
+}
 
-  // 🔥 FALLBACK IF BLOCKED
-  setTimeout(()=>{
-    try{
-      if(previewFrame.contentWindow.location.href === "about:blank"){
-        window.open(link, "_blank");
-      }
-    }catch(e){
-      window.open(link, "_blank");
-    }
-  },1500);
+/* OPEN NEW TAB */
+function openNewTab(link){
+  window.open(link, "_blank");
 }
 
 /* NAVIGATION */
