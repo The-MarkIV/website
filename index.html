@@ -5,189 +5,184 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Temple of Learning</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= GLOBAL ================= */
+/* MAIN PAGE BACKGROUND (FIXED REPEAT) */
 body{
-  margin:0;
   font-family:'Poppins',sans-serif;
-  background:url("bg2.gif") repeat; /* FIXED REPEATING BACKGROUND */
-  color:white;
+  margin:0;
+  color:#fff;
+  background:url("bg2.gif") repeat center;
+  background-size:cover;
 }
 
-/* ================= LOGIN PAGE (PREMIUM) ================= */
+/* ================= LOGIN PAGE ================= */
+
 #loginScreen{
   position:fixed;
   inset:0;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  z-index:999;
+  flex-direction:column;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+    url("bg1.gif") repeat center;
+
+  background-size:cover;
+  z-index:1000;
 }
 
+/* LOGO TOP */
 .logo-top{
   position:absolute;
   top:30px;
   left:30px;
 }
-
 .logo-top img{
   width:220px;
-  filter: drop-shadow(0 0 25px white);
+  filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 50px gold);
+  transition:.4s;
+}
+.logo-top img:hover{
+  transform:scale(1.1) rotate(3deg);
 }
 
+/* LOGIN BOX */
 .login-box{
   width:420px;
-  padding:50px;
+  padding:50px 40px;
   border-radius:20px;
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(25px);
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(0,255,255,0.3);
   text-align:center;
-  box-shadow:0 0 50px rgba(0,0,0,0.4);
-  font-family:'Inter',sans-serif;
 }
 
-.login-box h2{
-  font-size:28px;
-  margin-bottom:30px;
+/* MINI LOGO */
+.mini-logo{
+  width:110px;
+  margin-bottom:20px;
 }
 
-.login-box input{
+/* INPUTS */
+.input-group input{
   width:100%;
   padding:15px;
   margin:10px 0;
   border:none;
   border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  color:white;
 }
 
-.login-box button{
+/* BUTTON */
+.login-btn{
   width:100%;
   padding:15px;
   border:none;
   border-radius:10px;
   background:linear-gradient(45deg,#ff9800,#ff5722);
   color:white;
-  font-weight:bold;
   cursor:pointer;
-  margin-top:10px;
+  font-weight:bold;
+  box-shadow:0 0 20px rgba(255,140,0,0.7);
+}
+.login-btn:hover{
+  box-shadow:0 0 40px rgba(255,140,0,1);
+  transform:scale(1.05);
 }
 
-/* ================= NAVBAR ================= */
+/* ================= NAVBAR (UPGRADED) ================= */
+
 .navbar{
+  padding:20px 40px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(15px);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:20px 40px;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(15px);
+  position:sticky;
+  top:0;
+  z-index:100;
 }
 
 .nav-left{
   display:flex;
   align-items:center;
-  gap:20px;
+  gap:15px;
 }
 
 .nav-logo{
-  width:80px; /* BIGGER LOGO */
+  width:70px;
+  filter:drop-shadow(0 0 15px orange);
 }
 
 .nav-title{
-  font-size:32px; /* BIGGER TEXT */
-  font-weight:700;
+  font-size:2rem;
+  font-weight:600;
 }
 
-/* ================= MAIN ================= */
-.container{
-  padding:30px;
-}
+/* MAIN */
+.container{ padding:30px; }
 
+/* SEARCH */
 #searchInput{
   width:100%;
   padding:15px;
-  border-radius:12px;
+  margin-bottom:20px;
+  border-radius:10px;
   border:none;
-  margin-bottom:25px;
 }
 
-/* ================= GRID ================= */
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
   gap:20px;
 }
 
-/* ================= CARD ================= */
+/* CARD */
 .card{
-  background:rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.08);
   border-radius:12px;
   overflow:hidden;
   backdrop-filter:blur(10px);
   transition:0.3s;
 }
-
 .card:hover{
   transform:scale(1.05);
-  box-shadow:0 0 20px cyan;
+  box-shadow:0 0 20px cyan, 0 0 40px rgba(0,255,255,0.5);
 }
-
 .card img{
   width:100%;
-  height:160px;
+  height:150px;
   object-fit:cover;
 }
+.card-body{ padding:10px; }
 
-.card-body{
-  padding:12px;
+/* UPLOADER */
+.uploader{
+  border:2px dashed rgba(255,255,255,.3);
+  padding:25px;
+  text-align:center;
+  border-radius:12px;
+  margin-bottom:20px;
 }
 
-.card button{
-  margin:5px;
-  padding:8px 10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-/* ================= MODAL ================= */
+/* MODAL */
 #previewModal{
   display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.9);
+  z-index:999;
   justify-content:center;
   align-items:center;
-  z-index:999;
 }
-
-.modal-box{
-  width:85%;
-  height:85%;
-  position:relative;
-}
-
-.modal-box iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-
-.modal-box button{
-  position:absolute;
-  top:10px;
-  background:white;
-  border:none;
-  padding:10px;
-  cursor:pointer;
-}
-
-.close-btn{ right:10px; }
-.left-btn{ left:10px; top:50%; }
-.right-btn{ right:10px; top:50%; }
 
 </style>
 </head>
@@ -201,12 +196,18 @@ body{
   </div>
 
   <div class="login-box">
+    <img src="logo.png" class="mini-logo">
     <h2>Welcome Back</h2>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password">
+    <div class="input-group">
+      <input id="username" placeholder="Username">
+    </div>
 
-    <button id="loginBtn">Enter Temple</button>
+    <div class="input-group">
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button id="loginBtn" class="login-btn">Enter Temple</button>
     <p id="error" style="color:red;display:none;">Wrong login</p>
   </div>
 </div>
@@ -224,17 +225,23 @@ body{
 
 <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
 
-<div class="grid" id="grid"></div>
+<div class="uploader" id="dropZone">
+  <p>📂 Drag & Drop PPT</p>
+  <input type="file" id="fileInput">
+  <button onclick="addByLink()">Add Link</button>
+</div>
+
+<div id="grid" class="grid"></div>
 
 </div>
 
 <!-- MODAL -->
 <div id="previewModal">
-  <div class="modal-box">
-    <button class="close-btn" onclick="closePreview()">❌</button>
-    <button class="left-btn" onclick="prevSlide()">⬅️</button>
-    <button class="right-btn" onclick="nextSlide()">➡️</button>
-    <iframe id="previewFrame"></iframe>
+  <div style="width:85%; height:85%; background:#000; position:relative;">
+    <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
+    <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
+    <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
+    <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
   </div>
 </div>
 
@@ -243,7 +250,6 @@ body{
 
 <script>
 
-/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSy...",
   authDomain: "temple-of-learning.firebaseapp.com",
@@ -263,14 +269,12 @@ loginBtn.onclick = ()=>{
   } else error.style.display="block";
 };
 
-/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
   render();
 }
 
-/* RENDER */
 function render(){
   const q = searchInput.value.toLowerCase();
 
@@ -291,30 +295,21 @@ function render(){
 
 searchInput.oninput = render;
 
-/* PREVIEW FIX */
 function getEmbedLink(link){
-  if(link.includes("docs.google.com")){
-    return link.replace("/edit","/embed");
+  if(link.includes("docs.google.com/presentation")){
+    return link.replace("/edit","/embed").replace("/view","/embed");
   }
   if(link.includes("drive.google.com")){
     const id = link.match(/[-\w]{25,}/);
     if(id) return `https://drive.google.com/file/d/${id[0]}/preview`;
   }
-  return null; // BLOCK SHAREPOINT
+  return link;
 }
 
 function openPreview(link,index){
-  const embed = getEmbedLink(link);
-
-  if(!embed){
-    alert("Preview not supported. Opening in new tab.");
-    openNewTab(link);
-    return;
-  }
-
   currentIndex = index;
   previewModal.style.display = "flex";
-  previewFrame.src = embed;
+  previewFrame.src = getEmbedLink(link);
 }
 
 function openNewTab(link){
@@ -322,40 +317,83 @@ function openNewTab(link){
 }
 
 function closePreview(){
-  previewModal.style.display="none";
-  previewFrame.src="";
+  previewModal.style.display = "none";
+  previewFrame.src = "";
 }
 
 function nextSlide(){
-  currentIndex = (currentIndex+1)%items.length;
-  openPreview(items[currentIndex].link,currentIndex);
+  currentIndex = (currentIndex + 1) % items.length;
+  openPreview(items[currentIndex].link, currentIndex);
 }
 
 function prevSlide(){
-  currentIndex = (currentIndex-1+items.length)%items.length;
-  openPreview(items[currentIndex].link,currentIndex);
+  currentIndex = (currentIndex - 1 + items.length) % items.length;
+  openPreview(items[currentIndex].link, currentIndex);
 }
 
-/* DELETE */
 async function del(i){
   await db.collection("ppts").doc(items[i].id).delete();
   load();
 }
 
-/* EDIT */
 async function edit(i){
   const t = prompt("Title", items[i].title);
   const l = prompt("Link", items[i].link);
   const th = prompt("Thumbnail", items[i].thumbnail || "");
 
   await db.collection("ppts").doc(items[i].id).update({
-    title: t,
-    link: l,
-    thumbnail: th
+    title: t || "Untitled",
+    link: l || "#",
+    thumbnail: th || ""
   });
 
   load();
 }
+
+fileInput.onchange = e=>{
+  const file = e.target.files[0];
+  const link = prompt("Paste link:");
+  const thumb = prompt("Thumbnail link:");
+
+  db.collection("ppts").add({
+    title: file?.name || "Untitled",
+    link: link || "#",
+    thumbnail: thumb || ""
+  });
+
+  load();
+};
+
+function addByLink(){
+  const link = prompt("Paste link:");
+  const title = prompt("Title:");
+  const thumb = prompt("Thumbnail link:");
+
+  db.collection("ppts").add({
+    title: title || "Untitled",
+    link: link || "#",
+    thumbnail: thumb || ""
+  });
+
+  load();
+}
+
+dropZone.ondragover = e=>e.preventDefault();
+
+dropZone.ondrop = e=>{
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  const link = prompt("Paste link:");
+  const thumb = prompt("Thumbnail link:");
+
+  db.collection("ppts").add({
+    title: file?.name || "Untitled",
+    link: link || "#",
+    thumbnail: thumb || ""
+  });
+
+  load();
+};
 
 load();
 
