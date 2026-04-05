@@ -329,14 +329,14 @@ function render(){
   grid.innerHTML = items
   .filter(i => (i.title || "").toLowerCase().includes(q))
   .map((it,i)=>`
-  <div class="card">
+  <div class="card" data-index="${i}">
     <img src="${it.thumbnail || 'https://via.placeholder.com/400x300'}">
     <div class="card-body">
       <h3>${it.title || "Untitled"}</h3>
-      <button onclick="openPreview('${it.link}', ${i})">Preview</button>
-      <button onclick="openNewTab('${it.link}')">Open</button>
-      <button onclick="edit(${i})">Edit</button>
-      <button onclick="del(${i})">Delete</button>
+      <button class="previewBtn">Preview</button>
+      <button class="openBtn">Open</button>
+      <button class="editBtn">Edit</button>
+      <button class="deleteBtn">Delete</button>
     </div>
   </div>`).join('');
 }
@@ -378,6 +378,34 @@ function prevSlide(){
   currentIndex = (currentIndex - 1 + items.length) % items.length;
   openPreview(items[currentIndex].link, currentIndex);
 }
+
+// 🔥 FIXED BUTTONS USING EVENT DELEGATION
+grid.addEventListener('click', function(e){
+  const card = e.target.closest('.card');
+  if(!card) return;
+  const index = parseInt(card.dataset.index);
+
+  if(e.target.classList.contains('previewBtn')){
+    openPreview(items[index].link, index);
+  } else if(e.target.classList.contains('openBtn')){
+    openNewTab(items[index].link);
+  } else if(e.target.classList.contains('editBtn')){
+    const item = items[index];
+    const newTitle = prompt("Edit PPT title:", item.title || "");
+    if(newTitle !== null){
+      db.collection("ppts").doc(item.id).update({ title: newTitle })
+        .then(()=> { items[index].title = newTitle; render(); })
+        .catch(err=>alert("Error updating: "+err));
+    }
+  } else if(e.target.classList.contains('deleteBtn')){
+    const item = items[index];
+    if(confirm("Are you sure you want to delete this PPT?")){
+      db.collection("ppts").doc(item.id).delete()
+        .then(()=> { items.splice(index,1); render(); })
+        .catch(err=>alert("Error deleting: "+err));
+    }
+  }
+});
 
 load();
 </script>
