@@ -9,14 +9,14 @@
 
 <style>
 
-/* ================= GLOBAL ================= */
+/* GLOBAL */
 body{
   margin:0;
   font-family:'Inter',sans-serif;
   color:#fff;
 }
 
-/* ================= LOGIN PAGE (PREMIUM) ================= */
+/* ================= LOGIN PAGE ================= */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -24,7 +24,7 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:url("bg1.gif") no-repeat center center/cover;
+  background:url("bg1.gif") center/cover;
   z-index:1000;
 }
 
@@ -34,26 +34,26 @@ body{
   top:30px;
   left:30px;
 }
-.logo-top img,
-.nav-logo,
-.mini-logo{
-  filter: drop-shadow(0 0 20px rgba(255,255,255,0.6));
+.logo-top img{
+  width:200px;
+  filter: drop-shadow(0 0 25px white);
   transition:0.4s;
 }
-.logo-top img{ width:200px; }
-.mini-logo{ width:80px; margin-bottom:20px; }
-
-.logo-top img:hover,
-.mini-logo:hover{
+.logo-top img:hover{
   transform:scale(1.1);
-  filter: drop-shadow(0 0 30px white);
+}
+
+.mini-logo{
+  width:90px;
+  margin-bottom:20px;
+  filter: drop-shadow(0 0 15px white);
 }
 
 /* LOGIN BOX */
 .login-box{
-  width:420px;
-  padding:50px 40px;
-  background:rgba(0,0,0,0.4);
+  width:520px;
+  padding:60px;
+  background:rgba(0,0,0,0.5);
   backdrop-filter:blur(20px);
   border-radius:20px;
   text-align:center;
@@ -65,20 +65,14 @@ body{
   to{opacity:1; transform:translateY(0);}
 }
 
-.login-box h2{
-  margin-bottom:25px;
-}
-
-/* INPUT */
 .login-box input{
   width:100%;
   padding:15px;
-  margin:10px 0;
+  margin:12px 0;
   border:none;
   border-radius:10px;
 }
 
-/* BUTTON */
 .login-btn{
   width:100%;
   padding:15px;
@@ -86,11 +80,9 @@ body{
   border-radius:10px;
   background:linear-gradient(45deg,#ff7b00,#ff3d00);
   color:#fff;
-  font-size:1rem;
   cursor:pointer;
 }
 
-/* ERROR */
 #error{
   color:red;
   display:none;
@@ -100,32 +92,67 @@ body{
 #mainPage{
   display:none;
   min-height:100vh;
-  background:url("bg2.gif") no-repeat center center/cover;
+  background:url("bg2.gif");
+  background-repeat:repeat;
+  background-size:400px;
 }
 
-/* NAVBAR */
+/* NAVBAR (UPGRADED) */
 .navbar{
-  padding:15px 30px;
-  background:rgba(0,0,0,0.4);
+  padding:25px 50px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(15px);
   display:flex;
   align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid rgba(255,255,255,0.1);
 }
+
 .nav-left{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:18px;
 }
-.nav-logo{ width:50px; }
 
-/* CONTENT */
+.nav-logo{
+  width:70px;
+  border-radius:12px;
+  filter: drop-shadow(0 0 15px orange);
+  transition:0.4s;
+}
+.nav-logo:hover{
+  transform:scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 40px gold);
+}
+
+.nav-left h2{
+  font-size:2.2rem;
+  font-weight:700;
+  letter-spacing:1px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe, #a18cd1);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:glowText 5s linear infinite;
+}
+
+@keyframes glowText{
+  0%{background-position:0%;}
+  100%{background-position:200%;}
+}
+
+/* MAIN */
 .container{ padding:30px; }
 
 #searchInput{
   width:100%;
-  padding:12px;
-  margin-bottom:20px;
-  border-radius:10px;
+  padding:18px;
+  border-radius:15px;
   border:none;
+  margin-bottom:25px;
 }
 
 /* GRID */
@@ -135,7 +162,6 @@ body{
   gap:20px;
 }
 
-/* CARD */
 .card{
   background:rgba(0,0,0,0.5);
   border-radius:12px;
@@ -166,7 +192,7 @@ body{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.9);
   justify-content:center;
   align-items:center;
 }
@@ -176,7 +202,7 @@ body{
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="logo-top">
     <img src="logo.png">
@@ -194,7 +220,7 @@ body{
   </div>
 </div>
 
-<!-- MAIN PAGE -->
+<!-- MAIN -->
 <div id="mainPage">
 
   <div class="navbar">
@@ -243,8 +269,7 @@ loginBtn.onclick = ()=>{
   } else error.style.display="block";
 };
 
-/* YOUR ORIGINAL JS BELOW (UNCHANGED) */
-
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSy...",
   authDomain: "temple-of-learning.firebaseapp.com",
@@ -287,7 +312,7 @@ function getEmbedLink(link){
   if(link.includes("docs.google.com")){
     return link.replace("/edit","/preview");
   }
-  return null; // block unsupported embeds (fix error)
+  return null;
 }
 
 function openPreview(link,index){
