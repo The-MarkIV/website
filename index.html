@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Temple of Learning</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 
-/* GLOBAL */
+/* ================= GLOBAL ================= */
 body{
   margin:0;
-  font-family:'Inter',sans-serif;
-  color:#fff;
+  font-family:'Poppins',sans-serif;
+  background:url("bg2.gif") repeat; /* FIXED REPEATING BACKGROUND */
+  color:white;
 }
 
-/* ================= LOGIN PAGE ================= */
+/* ================= LOGIN PAGE (PREMIUM) ================= */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -24,170 +25,135 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  background:url("bg1.gif") center/cover;
-  z-index:1000;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  z-index:999;
 }
 
-/* LOGOS */
 .logo-top{
   position:absolute;
   top:30px;
   left:30px;
 }
+
 .logo-top img{
-  width:200px;
+  width:220px;
   filter: drop-shadow(0 0 25px white);
-  transition:0.4s;
-}
-.logo-top img:hover{
-  transform:scale(1.1);
 }
 
-.mini-logo{
-  width:90px;
-  margin-bottom:20px;
-  filter: drop-shadow(0 0 15px white);
-}
-
-/* LOGIN BOX */
 .login-box{
-  width:520px;
-  padding:60px;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(20px);
+  width:420px;
+  padding:50px;
   border-radius:20px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(25px);
   text-align:center;
-  animation:fadeIn 0.8s ease;
+  box-shadow:0 0 50px rgba(0,0,0,0.4);
+  font-family:'Inter',sans-serif;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(40px);}
-  to{opacity:1; transform:translateY(0);}
+.login-box h2{
+  font-size:28px;
+  margin-bottom:30px;
 }
 
 .login-box input{
   width:100%;
   padding:15px;
-  margin:12px 0;
+  margin:10px 0;
   border:none;
   border-radius:10px;
 }
 
-.login-btn{
+.login-box button{
   width:100%;
   padding:15px;
   border:none;
   border-radius:10px;
-  background:linear-gradient(45deg,#ff7b00,#ff3d00);
-  color:#fff;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+  font-weight:bold;
   cursor:pointer;
+  margin-top:10px;
 }
 
-#error{
-  color:red;
-  display:none;
-}
-
-/* ================= MAIN PAGE ================= */
-#mainPage{
-  display:none;
-  min-height:100vh;
-  background:url("bg2.gif");
-  background-repeat:repeat;
-  background-size:400px;
-}
-
-/* NAVBAR (UPGRADED) */
+/* ================= NAVBAR ================= */
 .navbar{
-  padding:25px 50px;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(15px);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
-  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:20px 40px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(15px);
 }
 
 .nav-left{
   display:flex;
   align-items:center;
-  gap:18px;
+  gap:20px;
 }
 
 .nav-logo{
-  width:70px;
-  border-radius:12px;
-  filter: drop-shadow(0 0 15px orange);
-  transition:0.4s;
-}
-.nav-logo:hover{
-  transform:scale(1.1) rotate(5deg);
-  filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 40px gold);
+  width:80px; /* BIGGER LOGO */
 }
 
-.nav-left h2{
-  font-size:2.2rem;
+.nav-title{
+  font-size:32px; /* BIGGER TEXT */
   font-weight:700;
-  letter-spacing:1px;
-  background: linear-gradient(90deg, #4facfe, #00f2fe, #a18cd1);
-  background-size:200% auto;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:glowText 5s linear infinite;
 }
 
-@keyframes glowText{
-  0%{background-position:0%;}
-  100%{background-position:200%;}
+/* ================= MAIN ================= */
+.container{
+  padding:30px;
 }
-
-/* MAIN */
-.container{ padding:30px; }
 
 #searchInput{
   width:100%;
-  padding:18px;
-  border-radius:15px;
+  padding:15px;
+  border-radius:12px;
   border:none;
   margin-bottom:25px;
 }
 
-/* GRID */
+/* ================= GRID ================= */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
   gap:20px;
 }
 
+/* ================= CARD ================= */
 .card{
-  background:rgba(0,0,0,0.5);
+  background:rgba(255,255,255,0.1);
   border-radius:12px;
   overflow:hidden;
+  backdrop-filter:blur(10px);
   transition:0.3s;
 }
+
 .card:hover{
   transform:scale(1.05);
+  box-shadow:0 0 20px cyan;
 }
+
 .card img{
   width:100%;
-  height:150px;
+  height:160px;
   object-fit:cover;
 }
-.card-body{ padding:10px; }
 
-/* UPLOADER */
-.uploader{
-  border:2px dashed rgba(255,255,255,.3);
-  padding:25px;
-  text-align:center;
-  border-radius:12px;
-  margin-bottom:20px;
+.card-body{
+  padding:12px;
 }
 
-/* MODAL */
+.card button{
+  margin:5px;
+  padding:8px 10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ================= MODAL ================= */
 #previewModal{
   display:none;
   position:fixed;
@@ -195,7 +161,33 @@ body{
   background:rgba(0,0,0,0.9);
   justify-content:center;
   align-items:center;
+  z-index:999;
 }
+
+.modal-box{
+  width:85%;
+  height:85%;
+  position:relative;
+}
+
+.modal-box iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+.modal-box button{
+  position:absolute;
+  top:10px;
+  background:white;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
+
+.close-btn{ right:10px; }
+.left-btn{ left:10px; top:50%; }
+.right-btn{ right:10px; top:50%; }
 
 </style>
 </head>
@@ -209,50 +201,40 @@ body{
   </div>
 
   <div class="login-box">
-    <img src="logo.png" class="mini-logo">
     <h2>Welcome Back</h2>
 
     <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+    <input id="password" type="password">
 
-    <button id="loginBtn" class="login-btn">Enter Temple</button>
-    <p id="error">Wrong login</p>
+    <button id="loginBtn">Enter Temple</button>
+    <p id="error" style="color:red;display:none;">Wrong login</p>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="nav-left">
+    <img src="logo.png" class="nav-logo">
+    <div class="nav-title">Temple of Learning</div>
   </div>
 </div>
 
 <!-- MAIN -->
-<div id="mainPage">
+<div class="container">
 
-  <div class="navbar">
-    <div class="nav-left">
-      <img src="logo.png" class="nav-logo">
-      <h2>Temple of Learning</h2>
-    </div>
-  </div>
+<input type="text" id="searchInput" placeholder="🔍 Search PPT...">
 
-  <div class="container">
-
-    <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
-
-    <div class="uploader" id="dropZone">
-      <p>📂 Drag & Drop PPT</p>
-      <input type="file" id="fileInput">
-      <button onclick="addByLink()">Add Link</button>
-    </div>
-
-    <div id="grid" class="grid"></div>
-
-  </div>
+<div class="grid" id="grid"></div>
 
 </div>
 
 <!-- MODAL -->
 <div id="previewModal">
-  <div style="width:85%; height:85%; background:#000; position:relative;">
-    <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
-    <button onclick="prevSlide()" style="position:absolute; left:10px; top:50%;">⬅️</button>
-    <button onclick="nextSlide()" style="position:absolute; right:10px; top:50%;">➡️</button>
-    <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
+  <div class="modal-box">
+    <button class="close-btn" onclick="closePreview()">❌</button>
+    <button class="left-btn" onclick="prevSlide()">⬅️</button>
+    <button class="right-btn" onclick="nextSlide()">➡️</button>
+    <iframe id="previewFrame"></iframe>
   </div>
 </div>
 
@@ -260,14 +242,6 @@ body{
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-
-/* LOGIN */
-loginBtn.onclick = ()=>{
-  if(username.value==="admin" && password.value==="1234"){
-    loginScreen.style.display="none";
-    mainPage.style.display="block";
-  } else error.style.display="block";
-};
 
 /* FIREBASE */
 const firebaseConfig = {
@@ -282,12 +256,21 @@ const db = firebase.firestore();
 let items = [];
 let currentIndex = 0;
 
+/* LOGIN */
+loginBtn.onclick = ()=>{
+  if(username.value==="admin" && password.value==="1234"){
+    loginScreen.style.display="none";
+  } else error.style.display="block";
+};
+
+/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
   render();
 }
 
+/* RENDER */
 function render(){
   const q = searchInput.value.toLowerCase();
 
@@ -308,19 +291,27 @@ function render(){
 
 searchInput.oninput = render;
 
+/* PREVIEW FIX */
 function getEmbedLink(link){
   if(link.includes("docs.google.com")){
-    return link.replace("/edit","/preview");
+    return link.replace("/edit","/embed");
   }
-  return null;
+  if(link.includes("drive.google.com")){
+    const id = link.match(/[-\w]{25,}/);
+    if(id) return `https://drive.google.com/file/d/${id[0]}/preview`;
+  }
+  return null; // BLOCK SHAREPOINT
 }
 
 function openPreview(link,index){
   const embed = getEmbedLink(link);
+
   if(!embed){
-    alert("Preview not supported. Use Open button.");
+    alert("Preview not supported. Opening in new tab.");
+    openNewTab(link);
     return;
   }
+
   currentIndex = index;
   previewModal.style.display = "flex";
   previewFrame.src = embed;
@@ -331,18 +322,39 @@ function openNewTab(link){
 }
 
 function closePreview(){
-  previewModal.style.display = "none";
-  previewFrame.src = "";
+  previewModal.style.display="none";
+  previewFrame.src="";
 }
 
 function nextSlide(){
-  currentIndex = (currentIndex + 1) % items.length;
-  openPreview(items[currentIndex].link, currentIndex);
+  currentIndex = (currentIndex+1)%items.length;
+  openPreview(items[currentIndex].link,currentIndex);
 }
 
 function prevSlide(){
-  currentIndex = (currentIndex - 1 + items.length) % items.length;
-  openPreview(items[currentIndex].link, currentIndex);
+  currentIndex = (currentIndex-1+items.length)%items.length;
+  openPreview(items[currentIndex].link,currentIndex);
+}
+
+/* DELETE */
+async function del(i){
+  await db.collection("ppts").doc(items[i].id).delete();
+  load();
+}
+
+/* EDIT */
+async function edit(i){
+  const t = prompt("Title", items[i].title);
+  const l = prompt("Link", items[i].link);
+  const th = prompt("Thumbnail", items[i].thumbnail || "");
+
+  await db.collection("ppts").doc(items[i].id).update({
+    title: t,
+    link: l,
+    thumbnail: th
+  });
+
+  load();
 }
 
 load();
