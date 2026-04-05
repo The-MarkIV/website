@@ -9,14 +9,7 @@
 
 <style>
 
-/* BACKGROUNDS FROM OLD */
-body{
-  font-family:'Inter',sans-serif;
-  margin:0;
-  color:#fff;
-  background:url("bg2.gif") no-repeat center center/cover;
-}
-
+/* ================= LOGIN (OLD STYLE) ================= */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -28,13 +21,45 @@ body{
   z-index:10;
 }
 
-/* MODERN UI */
-.container{ padding:30px; }
+.login-box-modern{
+  width:400px;
+  padding:40px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
+  text-align:center;
+}
+
+.login-box-modern input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  background:transparent;
+  color:white;
+}
+
+.login-box-modern button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+
+/* ================= MAIN (NEW UI) ================= */
+body{
+  font-family:'Inter',sans-serif;
+  margin:0;
+  color:#fff;
+  background:linear-gradient(135deg,#0c0c0c,#1a1a2e,#16213e);
+}
 
 .navbar{
   padding:20px 30px;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
   display:flex;
   align-items:center;
   gap:10px;
@@ -42,17 +67,21 @@ body{
 
 .nav-logo{ width:50px; }
 
+.container{ padding:30px; }
+
 #searchInput{
   width:100%;
-  padding:14px;
+  padding:15px;
   border-radius:12px;
   border:none;
   margin-bottom:20px;
+  background:rgba(255,255,255,0.1);
+  color:white;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
   gap:20px;
 }
 
@@ -64,19 +93,21 @@ body{
   transition:0.3s;
 }
 .card:hover{
-  transform:scale(1.05);
+  transform:translateY(-10px);
   box-shadow:0 0 25px cyan;
 }
+
 .card img{
   width:100%;
-  height:160px;
+  height:180px;
   object-fit:cover;
 }
+
 .card-body{ padding:15px; }
 
-button{
+.card button{
+  margin:5px;
   padding:8px 12px;
-  margin:5px 3px;
   border:none;
   border-radius:8px;
   cursor:pointer;
@@ -85,7 +116,7 @@ button{
 /* UPLOADER */
 .uploader{
   border:2px dashed rgba(255,255,255,.3);
-  padding:25px;
+  padding:30px;
   text-align:center;
   border-radius:12px;
   margin-bottom:20px;
@@ -107,7 +138,7 @@ button{
 
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN (OLD) -->
 <div id="loginScreen">
   <div class="login-box-modern">
     <h2>Sign In</h2>
@@ -118,13 +149,12 @@ button{
   </div>
 </div>
 
-<!-- NAVBAR -->
+<!-- MAIN (NEW) -->
 <div class="navbar">
   <img src="logo.png" class="nav-logo">
   <h2>Temple of Learning</h2>
 </div>
 
-<!-- MAIN -->
 <div class="container">
 
 <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
@@ -154,7 +184,7 @@ button{
 
 <script>
 
-/* YOUR JS — FULLY UNTOUCHED */
+/* JS COMPLETELY SAME */
 
 const firebaseConfig = {
   apiKey: "AIzaSy...",
@@ -200,7 +230,6 @@ function render(){
 
 searchInput.oninput = render;
 
-/* rest JS same */
 function getEmbedLink(link){
   if(link.includes("docs.google.com/presentation")){
     return link.replace("/edit","/embed").replace("/view","/embed");
