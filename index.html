@@ -9,7 +9,7 @@
 
 <style>
 
-/* MAIN PAGE BACKGROUND (FIXED REPEAT) */
+/* MAIN PAGE BACKGROUND */
 body{
   font-family:'Poppins',sans-serif;
   margin:0;
@@ -18,8 +18,7 @@ body{
   background-size:cover;
 }
 
-/* ================= LOGIN PAGE ================= */
-
+/* LOGIN SCREEN (PREMIUM RESTORED) */
 #loginScreen{
   position:fixed;
   inset:0;
@@ -36,7 +35,7 @@ body{
   z-index:1000;
 }
 
-/* LOGO TOP */
+/* LOGOS */
 .logo-top{
   position:absolute;
   top:30px;
@@ -45,10 +44,11 @@ body{
 .logo-top img{
   width:220px;
   filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 50px gold);
-  transition:.4s;
 }
-.logo-top img:hover{
-  transform:scale(1.1) rotate(3deg);
+
+.mini-logo{
+  width:100px;
+  margin-bottom:20px;
 }
 
 /* LOGIN BOX */
@@ -62,13 +62,7 @@ body{
   text-align:center;
 }
 
-/* MINI LOGO */
-.mini-logo{
-  width:110px;
-  margin-bottom:20px;
-}
-
-/* INPUTS */
+/* INPUT */
 .input-group input{
   width:100%;
   padding:15px;
@@ -88,42 +82,28 @@ body{
   background:linear-gradient(45deg,#ff9800,#ff5722);
   color:white;
   cursor:pointer;
-  font-weight:bold;
-  box-shadow:0 0 20px rgba(255,140,0,0.7);
-}
-.login-btn:hover{
-  box-shadow:0 0 40px rgba(255,140,0,1);
-  transform:scale(1.05);
 }
 
-/* ================= NAVBAR (UPGRADED) ================= */
-
+/* NAVBAR */
 .navbar{
-  padding:20px 40px;
+  padding:15px 30px;
   background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(15px);
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
 }
 
 .nav-left{
   display:flex;
   align-items:center;
-  gap:15px;
+  gap:10px;
 }
 
 .nav-logo{
-  width:70px;
-  filter:drop-shadow(0 0 15px orange);
+  width:60px;
 }
 
 .nav-title{
-  font-size:2rem;
-  font-weight:600;
+  font-size:1.8rem;
 }
 
 /* MAIN */
@@ -132,7 +112,7 @@ body{
 /* SEARCH */
 #searchInput{
   width:100%;
-  padding:15px;
+  padding:12px;
   margin-bottom:20px;
   border-radius:10px;
   border:none;
@@ -163,6 +143,25 @@ body{
   object-fit:cover;
 }
 .card-body{ padding:10px; }
+
+/* BUTTONS (RESTORED) */
+.card-actions{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:8px 12px;
+  border:none;
+  border-radius:6px;
+  margin:3px;
+  cursor:pointer;
+}
+
+.btn-primary{ background:#4facfe; color:white; }
+.btn-success{ background:#56ab2f; color:white; }
+.btn-warning{ background:#f7971e; color:black; }
+.btn-danger{ background:#ff416c; color:white; }
 
 /* UPLOADER */
 .uploader{
@@ -285,10 +284,12 @@ function render(){
     <img src="${it.thumbnail || 'https://via.placeholder.com/400x300'}">
     <div class="card-body">
       <h3>${it.title || "Untitled"}</h3>
-      <button onclick="openPreview('${it.link}', ${i})">Preview</button>
-      <button onclick="openNewTab('${it.link}')">Open</button>
-      <button onclick="edit(${i})">Edit</button>
-      <button onclick="del(${i})">Delete</button>
+      <div class="card-actions">
+        <button class="btn btn-primary" onclick="openPreview('${it.link}', ${i})">Preview</button>
+        <button class="btn btn-success" onclick="openNewTab('${it.link}')">Open</button>
+        <button class="btn btn-warning" onclick="edit(${i})">Edit</button>
+        <button class="btn btn-danger" onclick="del(${i})">Delete</button>
+      </div>
     </div>
   </div>`).join('');
 }
