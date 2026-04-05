@@ -6,7 +6,6 @@
 <title>Temple of Learning</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Road+Rage&display=swap');
 
@@ -239,6 +238,55 @@ body{
   justify-content:center;
   align-items:center;
 }
+
+/* 🔥 IMPROVED DRAG & DROP BAR */
+.uploader {
+  margin-bottom: 20px;
+  padding: 30px;
+  border: 2px dashed rgba(255,255,255,0.5);
+  border-radius: 15px;
+  text-align: center;
+  color: #fff;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+
+.uploader:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(0, 255, 255, 0.7);
+  box-shadow: 0 0 20px rgba(0,255,255,0.3);
+}
+
+.uploader.dragover {
+  background: rgba(0,255,255,0.15);
+  border-color: #00ffff;
+  box-shadow: 0 0 25px #00ffff;
+}
+
+.uploader input[type="file"] {
+  display: none;
+}
+
+.uploader button {
+  margin-top: 15px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(45deg,#00c6ff,#0072ff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.uploader button:hover {
+  background: linear-gradient(45deg,#0072ff,#00c6ff);
+  box-shadow: 0 0 25px rgba(0,114,255,0.8);
+  transform: scale(1.05);
+}
 </style>
 </head>
 
@@ -275,6 +323,7 @@ body{
 
 <input type="text" id="searchInput" placeholder="🔍 Search PPT...">
 
+<!-- 🔥 IMPROVED DRAG & DROP UPLOADER -->
 <div class="uploader" id="dropZone">
   <p>📂 Drag & Drop PPT</p>
   <input type="file" id="fileInput">
@@ -343,15 +392,38 @@ function render(){
 
 searchInput.oninput = render;
 
+// Convert link to embeddable version
 function getEmbedLink(link){
   if(link.includes("docs.google.com/presentation")){
     return link.replace("/edit","/embed").replace("/view","/embed");
   }
-  if(link.includes("drive.google.com")){
-    const id = link.match(/[-\w]{25,}/);
-    if(id) return `https://drive.google.com/file/d/${id[0]}/preview`;
+  if(link.includes("onedrive.live.com")){
+    if(link.includes("?")) return link.split("?")[0] + "?embed";
+    return link + "?embed";
   }
   return link;
+}
+
+// Add Link
+function addByLink() {
+  const link = prompt("Enter your OneDrive or Google Slides link:");
+  if(!link) return;
+
+  const googleSlidePattern = /https:\/\/docs\.google\.com\/presentation\/.*/;
+  const oneDrivePattern = /https:\/\/(www\.)?onedrive\.live\.com\/.*/;
+
+  if(googleSlidePattern.test(link) || oneDrivePattern.test(link)){
+    const title = prompt("Enter PPT title:") || "Untitled";
+    const thumb = prompt("Thumbnail link (optional):") || "https://via.placeholder.com/400x300";
+
+    db.collection("ppts").add({
+      title: title,
+      link: link,
+      thumbnail: thumb
+    }).then(() => load());
+  } else {
+    alert("Invalid link! Please enter a valid Google Slides or OneDrive link.");
+  }
 }
 
 function openPreview(link,index){
@@ -379,7 +451,7 @@ function prevSlide(){
   openPreview(items[currentIndex].link, currentIndex);
 }
 
-// 🔥 FIXED BUTTONS USING EVENT DELEGATION
+// Button delegation
 grid.addEventListener('click', function(e){
   const card = e.target.closest('.card');
   if(!card) return;
@@ -405,6 +477,39 @@ grid.addEventListener('click', function(e){
         .catch(err=>alert("Error deleting: "+err));
     }
   }
+});
+
+// Drag & Drop
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if(!file) return;
+
+  const link = prompt("Enter OneDrive or Google Slides link:");
+  const thumb = prompt("Thumbnail link (optional):");
+
+  db.collection("ppts").add({
+    title: file.name || "Untitled",
+    link: link || "#",
+    thumbnail: thumb || "https://via.placeholder.com/400x300"
+  }).then(() => load());
+});
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const link = prompt("Enter OneDrive or Google Slides link:");
+  const thumb = prompt("Thumbnail link (optional):");
+
+  db.collection("ppts").add({
+    title: file.name || "Untitled",
+    link: link || "#",
+    thumbnail: thumb || "https://via.placeholder.com/400x300"
+  }).then(() => load());
 });
 
 load();
