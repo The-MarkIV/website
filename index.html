@@ -10,71 +10,49 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Road+Rage&display=swap');
 
-/* MAIN PAGE BACKGROUND */
+/* GLOBAL */
 body{
   font-family:'Poppins',sans-serif;
   margin:0;
   color:#fff;
-  background:url("bg2.gif") repeat center;
+  background:url("bg2.gif") repeat;
   background-size:cover;
 }
 
-/* LOGIN SCREEN */
+/* LOGIN PAGE (RESTORED PREMIUM) */
 #loginScreen{
   position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
-
-  background:
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
-    url("bg1.gif") repeat center;
-
-  background-size:cover;
+  background:url("bg1.gif") no-repeat center center/cover;
   z-index:1000;
 }
 
-/* LOGOS */
-.logo-top{
-  position:absolute;
-  top:30px;
-  left:30px;
-}
-.logo-top img{
-  width:220px;
-  filter: drop-shadow(0 0 25px orange) drop-shadow(0 0 50px gold);
+.login-box{
+  width:420px;
+  padding:50px;
+  border-radius:20px;
+  text-align:center;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(20px);
+  animation:fadeIn 1s ease;
 }
 
-.mini-logo{
-  width:100px;
+.login-box h2{
+  font-size:2rem;
   margin-bottom:20px;
 }
 
-/* LOGIN BOX */
-.login-box{
-  width:420px;
-  padding:50px 40px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(20px);
-  box-shadow:0 0 40px rgba(0,255,255,0.3);
-  text-align:center;
-}
-
-/* INPUT */
-.input-group input{
+.login-box input{
   width:100%;
   padding:15px;
   margin:10px 0;
   border:none;
   border-radius:10px;
-  background:rgba(255,255,255,0.1);
-  color:white;
 }
 
-/* BUTTON */
 .login-btn{
   width:100%;
   padding:15px;
@@ -85,76 +63,48 @@ body{
   cursor:pointer;
 }
 
-/* NAVBAR */
-.navbar{
-  padding:20px 40px;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(15px);
-  display:flex;
-  align-items:center;
+#error{
+  color:red;
+  display:none;
 }
 
-.nav-left{
+/* NAVBAR */
+.navbar{
+  padding:20px 30px;
   display:flex;
   align-items:center;
   gap:15px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(10px);
 }
 
 .nav-logo{
   width:70px;
-  filter:drop-shadow(0 0 15px orange);
 }
 
-/* 🔥 NEON TITLE */
+/* TITLE FONT + ANIMATION */
 .nav-title{
-  font-family: "Road Rage", sans-serif;
-  font-size: 2.8rem;
-  letter-spacing: 2px;
+  font-family:'Road Rage', cursive;
+  font-size:3rem;
+  letter-spacing:3px;
   color:#fff;
-
-  text-shadow:
-    0 0 5px #fff,
-    0 0 10px orange,
-    0 0 20px orange,
-    0 0 40px gold;
-
-  animation: glowPulse 2s infinite alternate, flicker 3s infinite;
+  animation:glow 2s infinite alternate;
 }
 
-/* ANIMATIONS */
-@keyframes glowPulse {
-  from {
-    text-shadow:
-      0 0 5px #fff,
-      0 0 10px orange,
-      0 0 20px orange,
-      0 0 40px gold;
-  }
-  to {
-    text-shadow:
-      0 0 10px #fff,
-      0 0 20px orange,
-      0 0 40px orange,
-      0 0 80px gold;
-  }
-}
-
-@keyframes flicker {
-  0%,18%,22%,25%,53%,57%,100% { opacity:1; }
-  20%,24%,55% { opacity:0.4; }
-  21%,23%,56% { opacity:0.8; }
+@keyframes glow{
+  from{ text-shadow:0 0 10px #ff9800; }
+  to{ text-shadow:0 0 30px #ff5722,0 0 60px orange; }
 }
 
 /* MAIN */
 .container{ padding:30px; }
 
-/* SEARCH */
 #searchInput{
   width:100%;
-  padding:12px;
-  margin-bottom:20px;
+  padding:15px;
   border-radius:10px;
   border:none;
+  margin-bottom:20px;
 }
 
 /* GRID */
@@ -169,12 +119,6 @@ body{
   background:rgba(255,255,255,0.08);
   border-radius:12px;
   overflow:hidden;
-  backdrop-filter:blur(10px);
-  transition:0.3s;
-}
-.card:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 20px cyan, 0 0 40px rgba(0,255,255,0.5);
 }
 .card img{
   width:100%;
@@ -182,25 +126,6 @@ body{
   object-fit:cover;
 }
 .card-body{ padding:10px; }
-
-/* BUTTONS */
-.card-actions{
-  display:flex;
-  flex-wrap:wrap;
-}
-
-.btn{
-  padding:8px 12px;
-  border:none;
-  border-radius:6px;
-  margin:3px;
-  cursor:pointer;
-}
-
-.btn-primary{ background:#4facfe; color:white; }
-.btn-success{ background:#56ab2f; color:white; }
-.btn-warning{ background:#f7971e; color:black; }
-.btn-danger{ background:#ff416c; color:white; }
 
 /* UPLOADER */
 .uploader{
@@ -216,12 +141,16 @@ body{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,0.85);
   z-index:999;
   justify-content:center;
   align-items:center;
 }
 
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
 </style>
 </head>
 
@@ -229,33 +158,19 @@ body{
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="logo-top">
-    <img src="logo.png">
-  </div>
-
   <div class="login-box">
-    <img src="logo.png" class="mini-logo">
     <h2>Welcome Back</h2>
-
-    <div class="input-group">
-      <input id="username" placeholder="Username">
-    </div>
-
-    <div class="input-group">
-      <input id="password" type="password" placeholder="Password">
-    </div>
-
-    <button id="loginBtn" class="login-btn">Enter Temple</button>
-    <p id="error" style="color:red;display:none;">Wrong login</p>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password">
+    <button id="loginBtn" class="login-btn">Enter</button>
+    <p id="error">Wrong login</p>
   </div>
 </div>
 
 <!-- NAVBAR -->
 <div class="navbar">
-  <div class="nav-left">
-    <img src="logo.png" class="nav-logo">
-    <div class="nav-title">Temple of Learning</div>
-  </div>
+  <img src="logo.png" class="nav-logo">
+  <div class="nav-title">Temple of Learning</div>
 </div>
 
 <!-- MAIN -->
@@ -287,6 +202,8 @@ body{
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
+
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSy...",
   authDomain: "temple-of-learning.firebaseapp.com",
@@ -299,18 +216,23 @@ const db = firebase.firestore();
 let items = [];
 let currentIndex = 0;
 
+/* LOGIN FIXED */
 loginBtn.onclick = ()=>{
   if(username.value==="admin" && password.value==="1234"){
     loginScreen.style.display="none";
-  } else error.style.display="block";
+  } else {
+    error.style.display="block";
+  }
 };
 
+/* LOAD */
 async function load(){
   const snap = await db.collection("ppts").get();
   items = snap.docs.map(d=>({id:d.id,...d.data()}));
   render();
 }
 
+/* RENDER FIXED */
 function render(){
   const q = searchInput.value.toLowerCase();
 
@@ -321,21 +243,20 @@ function render(){
     <img src="${it.thumbnail || 'https://via.placeholder.com/400x300'}">
     <div class="card-body">
       <h3>${it.title || "Untitled"}</h3>
-      <div class="card-actions">
-        <button class="btn btn-primary" onclick="openPreview('${it.link}', ${i})">Preview</button>
-        <button class="btn btn-success" onclick="openNewTab('${it.link}')">Open</button>
-        <button class="btn btn-warning" onclick="edit(${i})">Edit</button>
-        <button class="btn btn-danger" onclick="del(${i})">Delete</button>
-      </div>
+      <button onclick="openPreview('${it.link}', ${i})">Preview</button>
+      <button onclick="openNewTab('${it.link}')">Open</button>
+      <button onclick="edit(${i})">Edit</button>
+      <button onclick="del(${i})">Delete</button>
     </div>
   </div>`).join('');
 }
 
 searchInput.oninput = render;
 
+/* FIXED EMBED */
 function getEmbedLink(link){
   if(link.includes("docs.google.com/presentation")){
-    return link.replace("/edit","/embed").replace("/view","/embed");
+    return link.replace("/edit","/embed");
   }
   if(link.includes("drive.google.com")){
     const id = link.match(/[-\w]{25,}/);
@@ -369,6 +290,7 @@ function prevSlide(){
   openPreview(items[currentIndex].link, currentIndex);
 }
 
+/* ADD / DELETE / EDIT */
 async function del(i){
   await db.collection("ppts").doc(items[i].id).delete();
   load();
@@ -379,7 +301,7 @@ async function edit(i){
   const l = prompt("Link", items[i].link);
   const th = prompt("Thumbnail", items[i].thumbnail || "");
 
-  await db.collection("ppts").doc(items[i].id").update({
+  await db.collection("ppts").doc(items[i].id).update({
     title: t || "Untitled",
     link: l || "#",
     thumbnail: th || ""
@@ -387,20 +309,6 @@ async function edit(i){
 
   load();
 }
-
-fileInput.onchange = e=>{
-  const file = e.target.files[0];
-  const link = prompt("Paste link:");
-  const thumb = prompt("Thumbnail link:");
-
-  db.collection("ppts").add({
-    title: file?.name || "Untitled",
-    link: link || "#",
-    thumbnail: thumb || ""
-  });
-
-  load();
-};
 
 function addByLink(){
   const link = prompt("Paste link:");
@@ -416,24 +324,8 @@ function addByLink(){
   load();
 }
 
-dropZone.ondragover = e=>e.preventDefault();
-
-dropZone.ondrop = e=>{
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  const link = prompt("Paste link:");
-  const thumb = prompt("Thumbnail link:");
-
-  db.collection("ppts").add({
-    title: file?.name || "Untitled",
-    link: link || "#",
-    thumbnail: thumb || ""
-  });
-
-  load();
-};
-
 load();
+
 </script>
 
 </body>
