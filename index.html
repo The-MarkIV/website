@@ -39,12 +39,10 @@ body{
 /* ✅ UPDATED TITLE */
 .nav-title{
   font-family:"Cinzel", serif;
-  font-size:3.6rem; /* +30% */
+  font-size:3.6rem;
   letter-spacing:2px;
   color:#fff;
   text-align:center;
-
-  /* reduced static glow */
   text-shadow:
     0 0 4px #fff,
     0 0 8px #ff9800,
@@ -154,4 +152,172 @@ body{
   </div>
 </div>
 
-<!-- REST OF YOUR CODE UNCHANGED -->
+<!-- MAIN -->
+<div class="container">
+
+<input type="text" id="searchInput" placeholder="🔍 Search PPT...">
+
+<div class="uploader" id="dropZone">
+  <p>📂 Drag & Drop PPT</p>
+  <input type="file" id="fileInput">
+</div>
+
+<div class="addLinkContainer">
+  <button onclick="addByLink()">Add Link</button>
+</div>
+
+<div id="grid" class="grid"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="previewModal">
+  <div style="width:85%; height:85%; background:#000; position:relative;">
+    <button onclick="closePreview()" style="position:absolute; top:10px; right:10px;">❌</button>
+    <iframe id="previewFrame" style="width:100%; height:100%; border:none;"></iframe>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAc7E2CeSwW9_uTi-yFnvlpMD2BMdPT53I",
+  authDomain: "temple-of-learning.firebaseapp.com",
+  projectId: "temple-of-learning"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+/* 🔐 PROTECT PAGE */
+auth.onAuthStateChanged(user => {
+  if(!user){
+    window.location.href = "login.html";
+  }
+});
+
+/* APP LOGIC */
+let items = [];
+let currentIndex = 0;
+
+async function load(){
+  const snap = await db.collection("ppts").get();
+  items = snap.docs.map(d=>({id:d.id,...d.data()}));
+  render();
+}
+
+function render(){
+  const q = searchInput.value.toLowerCase();
+
+  grid.innerHTML = items
+  .filter(i => (i.title || "").toLowerCase().includes(q))
+  .map((it,i)=>`
+  <div class="card" data-index="${i}">
+    <img src="${it.thumbnail || 'https://via.placeholder.com/400x300'}">
+    <div class="card-body">
+      <h3>${it.title || "Untitled"}</h3>
+      <button class="previewBtn">Preview</button>
+      <button class="openBtn">Open</button>
+      <button class="editBtn">Edit</button>
+      <button class="deleteBtn">Delete</button>
+    </div>
+  </div>`).join('');
+}
+
+searchInput.oninput = render;
+
+function getEmbedLink(link){
+  if(link.includes("docs.google.com/presentation")){
+    return link.replace("/edit","/embed").replace("/view","/embed");
+  }
+  if(link.includes("onedrive.live.com")){
+    return link.includes("?") ? link.split("?")[0] + "?embed" : link + "?embed";
+  }
+  return link;
+}
+
+function openPreview(link,index){
+  currentIndex = index;
+  previewModal.style.display = "flex";
+  previewFrame.src = getEmbedLink(link);
+}
+
+function openNewTab(link){
+  window.open(link, "_blank");
+}
+
+function closePreview(){
+  previewModal.style.display = "none";
+  previewFrame.src = "";
+}
+
+/* BUTTON HANDLING */
+grid.addEventListener('click', function(e){
+  const card = e.target.closest('.card');
+  if(!card) return;
+  const index = parseInt(card.dataset.index);
+
+  if(e.target.classList.contains('previewBtn')){
+    openPreview(items[index].link, index);
+  }
+  else if(e.target.classList.contains('openBtn')){
+    openNewTab(items[index].link);
+  }
+  else if(e.target.classList.contains('editBtn')){
+    const item = items[index];
+    const newTitle = prompt("Edit title:", item.title);
+    if(newTitle){
+      db.collection("ppts").doc(item.id).update({title:newTitle});
+      load();
+    }
+  }
+  else if(e.target.classList.contains('deleteBtn')){
+    const item = items[index];
+    if(confirm("Delete?")){
+      db.collection("ppts").doc(item.id).delete();
+      load();
+    }
+  }
+});
+
+/* ADD LINK */
+function addByLink(){
+  let link = prompt("Enter Google Slides / OneDrive link:");
+  if(!link) return;
+
+  const title = prompt("Title:") || "Untitled";
+
+  db.collection("ppts").add({
+    title: title,
+    link: link,
+    thumbnail: "https://via.placeholder.com/400x300"
+  });
+
+  load();
+}
+
+/* DRAG DROP */
+dropZone.onclick = ()=>fileInput.click();
+
+dropZone.ondragover = e=>{
+  e.preventDefault();
+  dropZone.classList.add("dragover");
+};
+
+dropZone.ondragleave = ()=>dropZone.classList.remove("dragover");
+
+dropZone.ondrop = e=>{
+  e.preventDefault();
+  dropZone.classList.remove("dragover");
+};
+
+load();
+</script>
+
+</body>
+</html>
